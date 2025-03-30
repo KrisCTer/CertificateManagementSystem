@@ -383,12 +383,7 @@
                                 <img src="/api/placeholder/32/32" alt="User" class="rounded-circle me-2" width="32" height="32">
                                 <span>Admin User</span>
                             </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-user-circle me-2"></i> Hồ sơ</a></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#"><i class="fas fa-sign-out-alt me-2"></i> Đăng xuất</a></li>
-                            </ul>
+                            <partial
                         </li>
                     </ul>
                 </div>
@@ -396,39 +391,80 @@
         </nav>
 
         <!-- Dashboard Section -->
-        <div class="container-fluid">
-            <h1 class="h3 mb-4">Bảng điều khiển</h1>
+            @if (Model != null)
+            {
+                <div class="container-fluid">
+                    <h1 class="h3 mb-4">Bảng điều khiển</h1>
 
-            <div class="row">
-                <div class="col-xl-3 col-md-6">
-                    <div class="dashboard-stat stat-blue">
-                        <i class="fas fa-users"></i>
-                        <h4>1,543</h4>
-                        <p>Công dân</p>
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-blue">
+                                <i class="fas fa-users"></i>
+                                <h4>@Model.CitizensCount</h4>
+                                <p>Công dân</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-green">
+                                <i class="fas fa-certificate"></i>
+                                <h4>@Model.CertificatesCount</h4>
+                                <p>Chứng chỉ</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-yellow">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>@Model.PendingRequestsCount</h4>
+                                <p>Yêu cầu đang chờ</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-red">
+                                <i class="fas fa-check-circle"></i>
+                                <h4>@Model.RecentVerificationsCount</h4>
+                                <p>Xác minh gần đây</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="dashboard-stat stat-green">
-                        <i class="fas fa-certificate"></i>
-                        <h4>3,759</h4>
-                        <p>Chứng chỉ</p>
+            }
+            else
+            {
+                <div class="container-fluid">
+                    <h1 class="h3 mb-4">Bảng điều khiển</h1>
+
+                    <div class="row">
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-blue">
+                                <i class="fas fa-users"></i>
+                                <h4>0</h4>
+                                <p>Công dân</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-green">
+                                <i class="fas fa-certificate"></i>
+                                <h4>0</h4>
+                                <p>Chứng chỉ</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-yellow">
+                                <i class="fas fa-file-alt"></i>
+                                <h4>0</h4>
+                                <p>Yêu cầu đang chờ</p>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-md-6">
+                            <div class="dashboard-stat stat-red">
+                                <i class="fas fa-check-circle"></i>
+                                <h4>0</h4>
+                                <p>Xác minh gần đây</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="dashboard-stat stat-yellow">
-                        <i class="fas fa-file-alt"></i>
-                        <h4>87</h4>
-                        <p>Yêu cầu đang chờ</p>
-                    </div>
-                </div>
-                <div class="col-xl-3 col-md-6">
-                    <div class="dashboard-stat stat-red">
-                        <i class="fas fa-check-circle"></i>
-                        <h4>45</h4>
-                        <p>Xác minh gần đây</p>
-                    </div>
-                </div>
-            </div>
+            }
 
             <div class="row mt-4">
                 <div class="col-lg-8">
@@ -878,5 +914,40 @@
 
     <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const mainContent = document.querySelector(".main-content");
+                const menuItems = document.querySelectorAll(".sidebar ul li a");
+
+                // Danh sách nội dung tương ứng
+                const pages = {
+                    dashboard: "<h2>Trang chủ</h2><p>Chào mừng bạn đến với trang chủ!</p>",
+                    citizens: "<h2>Công dân</h2><p>Danh sách công dân...</p>",
+                    institutions: "<h2>Tổ chức giáo dục</h2><p>Thông tin về các tổ chức...</p>",
+                    certificates: "<h2>Chứng chỉ</h2><p>Danh sách chứng chỉ...</p>",
+                    certificateTypes: "<h2>Loại chứng chỉ</h2><p>Các loại chứng chỉ...</p>",
+                    requests: "<h2>Yêu cầu</h2><p>Danh sách các yêu cầu...</p>",
+                    verification: "<h2>Xác minh</h2><p>Xác minh chứng chỉ...</p>",
+                    users: "<h2>Người dùng</h2><p>Danh sách người dùng...</p>",
+                    reports: "<h2>Báo cáo</h2><p>Báo cáo hệ thống...</p>",
+                    logs: "<h2>Nhật ký hệ thống</h2><p>Lịch sử hoạt động...</p>",
+                    settings: "<h2>Cài đặt</h2><p>Tùy chỉnh hệ thống...</p>"
+                };
+
+                menuItems.forEach(item => {
+                    item.addEventListener("click", event => {
+                        event.preventDefault(); // Ngăn tải lại trang
+                        const page = item.getAttribute("href").substring(1); // Lấy ID trang
+
+                        if (pages[page]) {
+                            mainContent.innerHTML = pages[page]; // Thay đổi nội dung
+                            document.querySelector(".sidebar ul li.active")?.classList.remove("active");
+                            item.parentElement.classList.add("active"); // Đánh dấu menu được chọn
+                        }
+                    });
+                });
+            });
+        </script>
+
 </body>
 </html>
