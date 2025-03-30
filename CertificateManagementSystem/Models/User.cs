@@ -1,9 +1,10 @@
-﻿using CertificateManagementSystem.Models;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using CertificateManagementSystem.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 {
-    public class User
+    public class User : IdentityUser
     {
         [Key]
         [StringLength(20)]
