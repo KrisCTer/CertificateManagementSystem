@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography.X509Certificates;
+﻿using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +22,7 @@ namespace CertificateManagementSystem.Controllers
 
         // GET: api/CertificateRequests
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCertificateRequests()
+        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCertificateRequests()
         {
             return await _context.CertificateRequests
                 .Include(r => r.Citizen)
@@ -33,7 +33,7 @@ namespace CertificateManagementSystem.Controllers
 
         // GET: api/CertificateRequests/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CertificateRequest>> GetCertificateRequest(int id)
+        public async Task<ActionResult<CertificateRequestz>> GetCertificateRequest(int id)
         {
             var request = await _context.CertificateRequests
                 .Include(r => r.Citizen)
@@ -52,7 +52,7 @@ namespace CertificateManagementSystem.Controllers
 
         // GET: api/CertificateRequests/Citizen/5
         [HttpGet("Citizen/{citizenId}")]
-        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCitizenRequests(string citizenId)
+        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCitizenRequests(string citizenId)
         {
             return await _context.CertificateRequests
                 .Where(r => r.CitizenId == citizenId)
@@ -63,7 +63,7 @@ namespace CertificateManagementSystem.Controllers
 
         // POST: api/CertificateRequests
         [HttpPost]
-        public async Task<ActionResult<CertificateRequest>> CreateCertificateRequest(CertificateRequest request)
+        public async Task<ActionResult<CertificateRequestz>> CreateCertificateRequest(CertificateRequestz request)
         {
             request.SubmissionDate = DateTime.Now;
             request.Status = "Pending"; // Default status for new requests
@@ -76,7 +76,7 @@ namespace CertificateManagementSystem.Controllers
 
         // PUT: api/CertificateRequests/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequest request)
+        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequestz request)
         {
             if (id != request.RequestId)
             {
@@ -127,7 +127,7 @@ namespace CertificateManagementSystem.Controllers
 
         // DELETE: api/CertificateRequests/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<CertificateRequest>> DeleteCertificateRequest(int id)
+        public async Task<ActionResult<CertificateRequestz>> DeleteCertificateRequest(int id)
         {
             var request = await _context.CertificateRequests.FindAsync(id);
             if (request == null)
