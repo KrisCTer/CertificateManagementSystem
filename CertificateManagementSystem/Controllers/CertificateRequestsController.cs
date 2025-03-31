@@ -1,5 +1,4 @@
-﻿
-using CertificateManagementSystem.Models;
+﻿using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
