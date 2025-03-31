@@ -84,7 +84,7 @@ namespace CertificateManagementSystem.Controllers
                     }
                     else
                     {
-                        throw;
+                         throw;
                     }
                 }
                 return RedirectToAction(nameof(Index));
