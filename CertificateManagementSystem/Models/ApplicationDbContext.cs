@@ -27,7 +27,6 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
             // Configure relationships
             modelBuilder.Entity<Certificate>()
                 .HasOne(c => c.Citizen)
@@ -98,7 +97,7 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<SystemConfiguration>()
-                .HasOne(sc => sc.User)
+                .HasOne(sc => sc.UpdatedByUser)
                 .WithMany(u => u.SystemConfigurations)
                 .HasForeignKey(sc => sc.UpdatedBy)
                 .OnDelete(DeleteBehavior.Restrict)

@@ -1,556 +1,457 @@
 ﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - Hệ thống Quản lý Chứng chỉ</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #0056b3;
-            --secondary-color: #6c757d;
-            --success-color: #28a745;
-            --info-color: #17a2b8;
-            --warning-color: #ffc107;
-            --danger-color: #dc3545;
-            --light-color: #f8f9fa;
-            --dark-color: #343a40;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f5f5f5;
-        }
-
-        .sidebar {
-            height: 100vh;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 250px;
-            background-color: var(--dark-color);
-            color: white;
-            padding-top: 20px;
-            transition: all 0.3s;
-            z-index: 1000;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            padding: 10px 15px 20px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-            .sidebar-header img {
-                max-width: 70%;
-                margin-bottom: 10px;
-            }
-
-        .sidebar ul.components {
-            padding: 0;
-            list-style: none;
-        }
-
-        .sidebar ul li a {
-            padding: 12px 20px;
-            display: block;
-            color: #fff;
-            text-decoration: none;
-            transition: all 0.3s;
-            font-size: 0.95rem;
-        }
-
-            .sidebar ul li a:hover {
-                background-color: rgba(255, 255, 255, 0.1);
-            }
-
-            .sidebar ul li a i {
-                margin-right: 10px;
-                width: 20px;
-                text-align: center;
-            }
-
-        .sidebar ul li.active a {
-            background-color: var(--primary-color);
-        }
-
-        .sidebar .user-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            padding: 15px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            font-size: 0.85rem;
-        }
-
-        .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            transition: all 0.3s;
-        }
-
-        .navbar {
-            background-color: white;
-            border-bottom: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            border-radius: 10px;
-        }
-
-        .card-header {
-            background-color: white;
-            border-bottom: 1px solid #eee;
-            padding: 15px 20px;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .dashboard-stat {
-            padding: 20px;
-            text-align: center;
-            border-radius: 10px;
-            color: white;
-            margin-bottom: 20px;
-        }
-
-            .dashboard-stat i {
-                font-size: 3rem;
-                margin-bottom: 10px;
-            }
-
-            .dashboard-stat.stat-blue {
-                background: linear-gradient(to right, #4e73df, #224abe);
-            }
-
-            .dashboard-stat.stat-green {
-                background: linear-gradient(to right, #1cc88a, #13855c);
-            }
-
-            .dashboard-stat.stat-yellow {
-                background: linear-gradient(to right, #f6c23e, #dda20a);
-            }
-
-            .dashboard-stat.stat-red {
-                background: linear-gradient(to right, #e74a3b, #be392d);
-            }
-
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-        }
-
-        .btn-action {
-            padding: 4px 8px;
-            font-size: 0.9rem;
-        }
-
-        .certificate-card {
-            position: relative;
-            border: 1px solid #ddd;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-
-            .certificate-card .certificate-header {
-                background-color: var(--primary-color);
-                color: white;
-                padding: 15px;
-                position: relative;
-            }
-
-            .certificate-card .certificate-body {
-                padding: 20px;
-                background-color: white;
-            }
-
-            .certificate-card .certificate-footer {
-                padding: 15px 20px;
-                background-color: #f8f9fa;
-                border-top: 1px solid #eee;
-            }
-
-        .form-section {
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-            .form-section h4 {
-                margin-bottom: 20px;
-                padding-bottom: 10px;
-                border-bottom: 1px solid #eee;
-            }
-
-        .step-indicator {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-        }
-
-        .step {
-            text-align: center;
-            position: relative;
-            flex: 1;
-        }
-
-        .step-number {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background-color: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 10px;
-            font-weight: bold;
-            color: var(--secondary-color);
-        }
-
-        .step.active .step-number {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        .step.completed .step-number {
-            background-color: var(--success-color);
-            color: white;
-        }
-
-        .step-title {
-            font-size: 0.9rem;
-            color: var(--secondary-color);
-        }
-
-        .step.active .step-title {
-            color: var(--primary-color);
-            font-weight: bold;
-        }
-
-        .step.completed .step-title {
-            color: var(--success-color);
-        }
-
-        .step-line {
-            position: absolute;
-            top: 20px;
-            width: 100%;
-            height: 2px;
-            background-color: #e9ecef;
-            z-index: -1;
-        }
-
-        .step.completed .step-line {
-            background-color: var(--success-color);
-        }
-
-        @@media (max-width: 992px) {
-            .sidebar
-
-        {
-            width: 70px;
-            text-align: center;
-        }
-
-        .sidebar-header img {
-            max-width: 40px;
-        }
-
-        .sidebar ul li a span, .sidebar-header h4, .user-info span {
-            display: none;
-        }
-
-        .sidebar ul li a i {
-            margin-right: 0;
-            font-size: 1.2rem;
-        }
-
-        .main-content {
-            margin-left: 70px;
-        }
-
-        }
-    </style>
-</head>
-<body>
-    <nav class="sidebar">
-        <div class="sidebar-header">
-            <img src="/api/placeholder/250/100" alt="Logo" class="img-fluid">
-            <h4>CMS System</h4>
-        </div>
-
-        <ul class="components">
-            <li class="active">
-                <a href="/">
-                    <i class="fas fa-tachometer-alt"></i> <span>Trang chủ</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Citizens">
-                    <i class="fas fa-users"></i> <span>Công dân</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Institutions">
-                    <i class="fas fa-university"></i> <span>Tổ chức giáo dục</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Certificates">
-                    <i class="fas fa-certificate"></i> <span>Chứng chỉ</span>
-                </a>
-            </li>
-            <li>
-                <a href="/CertificateTypes">
-                    <i class="fas fa-tag"></i> <span>Loại chứng chỉ</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Requests">
-                    <i class="fas fa-file-alt"></i> <span>Yêu cầu</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Verification">
-                    <i class="fas fa-check-circle"></i> <span>Xác minh</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Users">
-                    <i class="fas fa-user-cog"></i> <span>Người dùng</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Reports">
-                    <i class="fas fa-chart-bar"></i> <span>Báo cáo</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Logs">
-                    <i class="fas fa-history"></i> <span>Nhật ký hệ thống</span>
-                </a>
-            </li>
-            <li>
-                <a href="/Settings">
-                    <i class="fas fa-cog"></i> <span>Cài đặt</span>
-                </a>
-            </li>
-        </ul>
-
-        <div class="user-info">
-            <i class="fas fa-user-circle mr-2"></i> <span>Admin User</span>
-        </div>
-    </nav>
-
-    <div class="main-content">
-        @RenderBody()
-    </div>
-
-    <div class="modal fade" id="certificateDetailModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chi tiết Chứng chỉ</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="certificate-card">
-                        <div class="certificate-header">
-                            <h4 class="text-center">Cử nhân Khoa học Máy tính</h4>
-                            <p class="text-center mb-0">Đại học Quốc gia Hà Nội</p>
-                        </div>
-                        <div class="certificate-body">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <p><strong>Họ tên:</strong> Nguyễn Văn A</p>
-                                    <p><strong>Ngày sinh:</strong> 15/05/1998</p>
-                                    <p><strong>CCCD/CMND:</strong> 001xxxxxxx</p>
-                                </div>
-                                <div class="col-md-6">
-                                    <p><strong>Mã số:</strong> CERT001</p>
-                                    <p><strong>Ngày cấp:</strong> 15/01/2023</p>
-                                    <p><strong>Hạn:</strong> Vĩnh viễn</p>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p><strong>Mô tả:</strong> Chứng nhận đã hoàn thành chương trình đào tạo Cử nhân ngành Khoa học Máy tính với khối lượng 145 tín chỉ.</p>
-                                    <p><strong>Xếp loại:</strong> Giỏi</p>
-                                    <p><strong>Người ký:</strong> PGS.TS. Nguyễn Văn X - Hiệu trưởng</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="certificate-footer d-flex justify-content-between align-items-center">
-                            <img src="/api/placeholder/100/30" alt="Mã QR" class="img-fluid">
-                            <p class="mb-0 text-muted">Mã xác thực: 7A3B9C2D5E</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <h5>Lịch sử xác minh</h5>
-                        <div class="table-responsive">
-                            <table class="table table-sm">
-                                <thead>
-                                    <tr>
-                                        <th>Thời gian</th>
-                                        <th>Tổ chức/Cá nhân</th>
-                                        <th>Phương thức</th>
-                                        <th>Trạng thái</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>20/03/2025 14:35</td>
-                                        <td>Công ty TNHH ABC</td>
-                                        <td>API</td>
-                                        <td><span class="badge bg-success">Thành công</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td>15/02/2025 09:23</td>
-                                        <td>Nguyễn Văn A</td>
-                                        <td>Portal</td>
-                                        <td><span class="badge bg-success">Thành công</span></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary">Tải xuống</button>
-                    <button type="button" class="btn btn-warning">Chỉnh sửa</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container-fluid d-none" id="addCertificateSection">
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Fix 1: Check if we're in an iframe to avoid navigation issues
-            if (window.self === window.top) {
-                const menuItems = document.querySelectorAll(".sidebar ul li a");
-
-                menuItems.forEach(item => {
-                    item.addEventListener("click", function(event) {
-                        event.preventDefault();
-
-                        document.querySelector(".sidebar ul li.active")?.classList.remove("active");
-                        this.parentElement.classList.add("active");
-
-                        const href = this.getAttribute("href");
-
-                        // Fix 2: Show loading indicator
-                        document.querySelector(".main-content").innerHTML = '<div class="d-flex justify-content-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
-
-                        // Fix 3: Add proper error handling with retry mechanism
-                        const fetchContent = (url, retries = 3) => {
-                            return fetch(url)
-                                .then(response => {
-                                    if (!response.ok) {
-                                        throw new Error(`Server responded with ${response.status}`);
-                                    }
-                                    return response.text();
-                                })
-                                .then(data => {
-                                    // Update the URL without reloading the page
-                                    history.pushState(null, "", url);
-                                    document.querySelector(".main-content").innerHTML = data;
-                                })
-                                .catch(error => {
-                                    console.error('Error fetching page content:', error);
-                                    if (retries > 0) {
-                                        // Fix 4: Wait before retrying
-                                        setTimeout(() => {
-                                            fetchContent(url, retries - 1);
-                                        }, 1000);
-                                    } else {
-                                        document.querySelector(".main-content").innerHTML =
-                                            `<div class="alert alert-danger">
-                                                <h4>Error loading content</h4>
-                                                <p>${error.message}</p>
-                                                <button class="btn btn-outline-danger mt-2" onclick="window.location.reload()">Refresh Page</button>
-                                            </div>`;
-                                    }
-                                });
-                        };
-
-                        fetchContent(href);
-                    });
-                });
-
-                // Fix 5: Handle back/forward browser navigation
-                window.addEventListener('popstate', function() {
-                    const currentPath = window.location.pathname;
-                    fetch(currentPath)
-                        .then(response => response.text())
-                        .then(data => {
-                            document.querySelector(".main-content").innerHTML = data;
-
-                            // Update active menu item
-                            document.querySelector(".sidebar ul li.active")?.classList.remove("active");
-                            document.querySelector(`.sidebar ul li a[href="${currentPath}"]`)?.parentElement.classList.add("active");
-                        })
-                        .catch(error => {
-                            console.error('Error handling navigation:', error);
-                        });
-                });
-            }
-
-            // Fix 6: Add error handling for the action buttons in the citizens view
-            document.addEventListener("click", function(event) {
-                const actionButton = event.target.closest(".btn-group a");
-                if (actionButton) {
-                    event.preventDefault();
-                    const href = actionButton.getAttribute("href");
-
-                    fetch(href)
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.text();
-                        })
-                        .then(data => {
-                            document.querySelector(".main-content").innerHTML = data;
-                        })
-                        .catch(error => {
-                            console.error('Error fetching action content:', error);
-
-                            // Show user-friendly error with retry option
-                            const errorAlert = document.createElement('div');
-                            errorAlert.className = 'alert alert-danger mt-3';
-                            errorAlert.innerHTML = `
-                                <p>Failed to load content: ${error.message}</p>
-                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='${href}'">Try Again</button>
-                            `;
-
-                            // Insert alert after the table
-                            const table = document.querySelector(".table-responsive");
-                            if (table) {
-                                table.parentNode.insertBefore(errorAlert, table.nextSibling);
-                            }
-                        });
-                }
-            });
-        });
-    </script>
-    @await RenderSectionAsync("Scripts", required: false)
-</body>
-</html>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>@ViewData["Title"] - Hệ thống Quản lý Chứng chỉ</title>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
+	<style>
+		:root {
+			--primary-color: #0056b3;
+			--secondary-color: #6c757d;
+			--success-color: #28a745;
+			--info-color: #17a2b8;
+			--warning-color: #ffc107;
+			--danger-color: #dc3545;
+			--light-color: #f8f9fa;
+			--dark-color: #343a40;
+		}
+
+		body {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			background-color: #f5f5f5;
+		}
+
+		.sidebar {
+			height: 100vh;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 250px;
+			background-color: var(--dark-color);
+			color: white;
+			padding-top: 20px;
+			transition: all 0.3s;
+			z-index: 1000;
+		}
+
+		.sidebar-header {
+			text-align: center;
+			padding: 10px 15px 20px;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+		}
+
+			.sidebar-header img {
+				max-width: 70%;
+				margin-bottom: 10px;
+			}
+
+		.sidebar ul.components {
+			padding: 0;
+			list-style: none;
+		}
+
+		.sidebar ul li a {
+			padding: 12px 20px;
+			display: block;
+			color: #fff;
+			text-decoration: none;
+			transition: all 0.3s;
+			font-size: 0.95rem;
+		}
+
+
+		.sidebar .user-info {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 100%;
+			padding: 15px;
+			border-top: 1px solid rgba(255, 255, 255, 0.1);
+			font-size: 0.85rem;
+		}
+
+		.main-content {
+			margin-left: 250px;
+			padding: 20px;
+			transition: all 0.3s;
+		}
+
+		.navbar {
+			background-color: white;
+			border-bottom: 1px solid #ddd;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		}
+
+		.card {
+			border: none;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			margin-bottom: 20px;
+			border-radius: 10px;
+		}
+
+		.card-header {
+			background-color: white;
+			border-bottom: 1px solid #eee;
+			padding: 15px 20px;
+			font-weight: bold;
+			font-size: 1.1rem;
+		}
+
+		.dashboard-stat {
+			padding: 20px;
+			text-align: center;
+			border-radius: 10px;
+			color: white;
+			margin-bottom: 20px;
+		}
+
+			.dashboard-stat i {
+				font-size: 3rem;
+				margin-bottom: 10px;
+			}
+
+			.dashboard-stat.stat-blue {
+				background: linear-gradient(to right, #4e73df, #224abe);
+			}
+
+			.dashboard-stat.stat-green {
+				background: linear-gradient(to right, #1cc88a, #13855c);
+			}
+
+			.dashboard-stat.stat-yellow {
+				background: linear-gradient(to right, #f6c23e, #dda20a);
+			}
+
+			.dashboard-stat.stat-red {
+				background: linear-gradient(to right, #e74a3b, #be392d);
+			}
+
+		.table-responsive {
+			overflow-x: auto;
+		}
+
+		.table th {
+			background-color: #f8f9fa;
+			font-weight: 600;
+		}
+
+		.btn-action {
+			padding: 4px 8px;
+			font-size: 0.9rem;
+		}
+
+		.certificate-card {
+			position: relative;
+			border: 1px solid #ddd;
+			border-radius: 15px;
+			overflow: hidden;
+		}
+
+			.certificate-card .certificate-header {
+				background-color: var(--primary-color);
+				color: white;
+				padding: 15px;
+				position: relative;
+			}
+
+			.certificate-card .certificate-body {
+				padding: 20px;
+				background-color: white;
+			}
+
+			.certificate-card .certificate-footer {
+				padding: 15px 20px;
+				background-color: #f8f9fa;
+				border-top: 1px solid #eee;
+			}
+
+		.form-section {
+			background-color: white;
+			border-radius: 10px;
+			padding: 20px;
+			margin-bottom: 20px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+		}
+
+			.form-section h4 {
+				margin-bottom: 20px;
+				padding-bottom: 10px;
+				border-bottom: 1px solid #eee;
+			}
+
+		.step-indicator {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 30px;
+		}
+
+		.step {
+			text-align: center;
+			position: relative;
+			flex: 1;
+		}
+
+		.step-number {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background-color: #e9ecef;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin: 0 auto 10px;
+			font-weight: bold;
+			color: var(--secondary-color);
+		}
+
+		.step.active .step-number {
+			background-color: var(--primary-color);
+			color: white;
+		}
+
+		.step.completed .step-number {
+			background-color: var(--success-color);
+			color: white;
+		}
+
+		.step-title {
+			font-size: 0.9rem;
+			color: var(--secondary-color);
+		}
+
+		.step.active .step-title {
+			color: var(--primary-color);
+			font-weight: bold;
+		}
+
+		.step.completed .step-title {
+			color: var(--success-color);
+		}
+
+		.step-line {
+			position: absolute;
+			top: 20px;
+			width: 100%;
+			height: 2px;
+			background-color: #e9ecef;
+			z-index: -1;
+		}
+
+		.step.completed .step-line {
+			background-color: var(--success-color);
+		}
+
+		@@media(max - width: 992px) {
+				.sidebar {
+					width: 70px;
+					text-align: center;
+				}
+
+				.sidebar-header img {
+					max-width: 40px;
+				}
+
+				.sidebar ul li a span, .sidebar-header h4, .user-info span {
+					display: none;
+				}
+
+				.sidebar ul li a i {
+					margin-right: 0;
+					font-size: 1.2rem;
+				}
+
+				.main-content {
+					margin-left: 70px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<nav class="sidebar">
+			<div class="sidebar-header">
+				<img src="/api/placeholder/250/100" alt="Logo" class="img-fluid">
+				<h4>CMS System</h4>
+			</div>
+
+			<ul class="components">
+				<li class="active">
+					<a href="/">
+						<i class="fas fa-tachometer-alt"></i> <span>Trang chủ</span>
+					</a>
+				</li>
+				<li>
+					<a href="/Citizens">
+						<i class="fas fa-users"></i> <span>Công dân</span>
+					</a>
+				</li>
+				<li>
+					<a href="/EducationalInstitution">
+						<i class="fas fa-university"></i> <span>Tổ chức giáo dục</span>
+					</a>
+				</li>
+
+				<li>
+					<a href="/Certificate">
+						<i class="fas fa-certificate"></i> <span>Chứng chỉ</span>
+					</a>
+				</li>
+				<li>
+					<a href="/CertificateType">
+						<i class="fas fa-tag"></i> <span>Loại chứng chỉ</span>
+					</a>
+				</li>
+				<li>
+					<a href="/CertificateRequest">
+						<i class="fas fa-file-alt"></i> <span>Yêu cầu</span>
+					</a>
+				</li>
+				<li>
+					<a href="/CertificateVerification">
+						<i class="fas fa-check-circle"></i> <span>Xác minh</span>
+					</a>
+				</li>
+				<li>
+					<a href="/User">
+						<i class="fas fa-user-cog"></i> <span>Người dùng</span>
+					</a>
+				</li>
+				<li>
+					<a href="/Certificate/CertificateStatistics">
+						<i class="fas fa-chart-bar"></i> <span>Thống kê chứng chỉ</span>
+					</a>
+				</li>
+				<li>
+					<a href="/SystemLog">
+						<i class="fas fa-history"></i> <span>Nhật ký hệ thống</span>
+					</a>
+				</li>
+				<li>
+					<a href="/SystemConfiguration">
+						<i class="fas fa-cog"></i> <span>Cài đặt</span>
+					</a>
+				</li>
+			</ul>
+
+			<div class="user-info">
+				<i class="fas fa-user-circle mr-2"></i> <span>Admin User</span>
+			</div>
+		</nav>
+		<div>
+			<div id="dynamic-content" class="main-content">
+				@RenderBody()
+			</div>
+		</div>
+
+
+		<div class="modal fade" id="certificateDetailModal" tabindex="-1" aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Chi tiết Chứng chỉ</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+					</div>
+					<div class="modal-body">
+						<div class="certificate-card">
+							<div class="certificate-header">
+								<h4 class="text-center">Cử nhân Khoa học Máy tính</h4>
+								<p class="text-center mb-0">Đại học Quốc gia Hà Nội</p>
+							</div>
+							<div class="certificate-body">
+								<div class="row mb-3">
+									<div class="col-md-6">
+										<p><strong>Họ tên:</strong> Nguyễn Văn A</p>
+										<p><strong>Ngày sinh:</strong> 15/05/1998</p>
+										<p><strong>CCCD/CMND:</strong> 001xxxxxxx</p>
+									</div>
+									<div class="col-md-6">
+										<p><strong>Mã số:</strong> CERT001</p>
+										<p><strong>Ngày cấp:</strong> 15/01/2023</p>
+										<p><strong>Hạn:</strong> Vĩnh viễn</p>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-12">
+										<p><strong>Mô tả:</strong> Chứng nhận đã hoàn thành chương trình đào tạo Cử nhân ngành Khoa học Máy tính với khối lượng 145 tín chỉ.</p>
+										<p><strong>Xếp loại:</strong> Giỏi</p>
+										<p><strong>Người ký:</strong> PGS.TS. Nguyễn Văn X - Hiệu trưởng</p>
+									</div>
+								</div>
+							</div>
+							<div class="certificate-footer d-flex justify-content-between align-items-center">
+								<img src="/api/placeholder/100/30" alt="Mã QR" class="img-fluid">
+								<p class="mb-0 text-muted">Mã xác thực: 7A3B9C2D5E</p>
+							</div>
+						</div>
+
+						<div class="mt-4">
+							<h5>Lịch sử xác minh</h5>
+							<div class="table-responsive">
+								<table class="table table-sm">
+									<thead>
+										<tr>
+											<th>Thời gian</th>
+											<th>Tổ chức/Cá nhân</th>
+											<th>Phương thức</th>
+											<th>Trạng thái</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td>20/03/2025 14:35</td>
+											<td>Công ty TNHH ABC</td>
+											<td>API</td>
+											<td><span class="badge bg-success">Thành công</span></td>
+										</tr>
+										<tr>
+											<td>15/02/2025 09:23</td>
+											<td>Nguyễn Văn A</td>
+											<td>Portal</td>
+											<td><span class="badge bg-success">Thành công</span></td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+						<button type="button" class="btn btn-primary">Tải xuống</button>
+						<button type="button" class="btn btn-warning">Chỉnh sửa</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="container-fluid d-none" id="addCertificateSection">
+		</div>
+
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script>
+						$(document).ready(function () {
+				$(".sidebar ul li a").click(function (e) {
+					e.preventDefault();
+
+					$(".sidebar ul li").removeClass("active");
+
+					$(this).parent().addClass("active");
+
+					// Mở trang tương ứng
+					var url = $(this).attr("href");
+					$("#dynamic-content").fadeOut(200, function () {
+						$.get(url, function (data) {
+							$("#dynamic-content").html($(data).find(".main-content").html());
+							$("#dynamic-content").fadeIn(200);
+						});
+					});
+				});
+			});
+
+		</script>
+
+
+		@await RenderSectionAsync("Scripts", required: false)
+	</body>
+	</html>

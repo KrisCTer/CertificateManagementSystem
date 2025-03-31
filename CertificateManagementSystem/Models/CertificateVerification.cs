@@ -6,10 +6,11 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
     public class CertificateVerification
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int VerificationId { get; set; }
 
         [Required]
-        [StringLength(30)]
+        [StringLength(36)]
         public string CertificateId { get; set; }
 
         public DateTime VerificationDate { get; set; }

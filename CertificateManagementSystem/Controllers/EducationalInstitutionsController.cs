@@ -22,6 +22,7 @@ namespace CertificateManagementSystem.Controllers
             return View(institutions);
         }
 
+
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -47,13 +48,10 @@ namespace CertificateManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EducationalInstitution institution)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.EducationalInstitutions.Add(institution);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(institution);
         }
 
         public async Task<IActionResult> Edit(string id)

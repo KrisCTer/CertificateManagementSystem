@@ -13,24 +13,17 @@ namespace CertificateManagementSystem.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Dashboard()
         {
-            var model = new DashboardViewModel
+            var dashboardData = new DashboardViewModel
             {
-                CitizensCount = _context.Citizens?.Count() ?? 0,
-                CertificatesCount = _context.Certificates?.Count() ?? 0,
-                PendingRequestsCount = _context.CertificateRequests?.Count(r => r.Status == "Pending") ?? 0,
-                RecentVerificationsCount = _context.CertificateVerifications?.Count() ?? 0
+                CitizensCount = _context.Citizens.Count(),
+                CertificatesCount = _context.Certificates.Count(),
+                PendingRequestsCount = _context.CertificateRequests.Count(r => r.Status == "Pending"), // Adjust condition as needed
+                RecentVerificationsCount = _context.CertificateVerifications.Count(v => v.VerificationDate >= DateTime.Now.AddMonths(-1)) // Example condition for recent verifications
             };
 
-            // Kiểm tra model có dữ liệu không
-            if (model == null)
-            {
-                return NotFound("Dữ liệu không tồn tại!");
-            }
-
-            return View(model);
+            return View(dashboardData);
         }
     }
-
 }

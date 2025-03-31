@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CertificateManagementSystem.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250330182008_InitIdentity")]
-    partial class InitIdentity
+    [Migration("20250331233928_InitDatabase")]
+    partial class InitDatabase
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,8 +60,8 @@ namespace CertificateManagementSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UploadedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("AttachmentId");
 
@@ -82,13 +82,13 @@ namespace CertificateManagementSystem.Migrations
 
                     b.Property<string>("CertificateTypeId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("CitizenId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<DateTime?>("ExpectedCompletionDate")
                         .HasColumnType("datetime2");
@@ -99,8 +99,8 @@ namespace CertificateManagementSystem.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("ProcessedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("RequestType")
                         .IsRequired()
@@ -129,18 +129,19 @@ namespace CertificateManagementSystem.Migrations
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.Certificate", b =>
                 {
                     b.Property<string>("CertificateId")
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("CertificateTypeId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("CitizenId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("Classification")
                         .IsRequired()
@@ -163,8 +164,8 @@ namespace CertificateManagementSystem.Migrations
 
                     b.Property<string>("IssuingInstitutionId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -223,8 +224,8 @@ namespace CertificateManagementSystem.Migrations
 
                     b.Property<string>("CertificateId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<DateTime>("ChangeDate")
                         .HasColumnType("datetime2");
@@ -264,8 +265,9 @@ namespace CertificateManagementSystem.Migrations
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.CertificateType", b =>
                 {
                     b.Property<string>("CertificateTypeId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("CertificateTypeName")
                         .IsRequired()
@@ -311,8 +313,8 @@ namespace CertificateManagementSystem.Migrations
 
                     b.Property<string>("CertificateId")
                         .IsRequired()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)");
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("Notes")
                         .IsRequired()
@@ -347,8 +349,9 @@ namespace CertificateManagementSystem.Migrations
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.Citizen", b =>
                 {
                     b.Property<string>("CitizenId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<DateTime>("CreatedDate")
                         .HasColumnType("datetime2");
@@ -391,10 +394,6 @@ namespace CertificateManagementSystem.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<byte[]>("ProfilePicture")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
@@ -406,8 +405,9 @@ namespace CertificateManagementSystem.Migrations
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.EducationalInstitution", b =>
                 {
                     b.Property<string>("InstitutionId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -466,8 +466,9 @@ namespace CertificateManagementSystem.Migrations
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.SystemConfiguration", b =>
                 {
                     b.Property<string>("ConfigId")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("ConfigName")
                         .IsRequired()
@@ -484,8 +485,8 @@ namespace CertificateManagementSystem.Migrations
                         .HasColumnType("nvarchar(500)");
 
                     b.Property<string>("UpdatedBy")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -530,8 +531,8 @@ namespace CertificateManagementSystem.Migrations
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("LogId");
 
@@ -623,17 +624,14 @@ namespace CertificateManagementSystem.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("UserId")
-                        .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)");
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
-
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
 
                     b.HasKey("Id");
 
@@ -876,12 +874,12 @@ namespace CertificateManagementSystem.Migrations
 
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.SystemConfiguration", b =>
                 {
-                    b.HasOne("CitizenshipCertificateandDiplomaManagementSystem.Models.User", "User")
+                    b.HasOne("CitizenshipCertificateandDiplomaManagementSystem.Models.User", "UpdatedByUser")
                         .WithMany("SystemConfigurations")
                         .HasForeignKey("UpdatedBy")
                         .OnDelete(DeleteBehavior.Restrict);
 
-                    b.Navigation("User");
+                    b.Navigation("UpdatedByUser");
                 });
 
             modelBuilder.Entity("CitizenshipCertificateandDiplomaManagementSystem.Models.SystemLog", b =>

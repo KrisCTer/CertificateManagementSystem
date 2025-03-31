@@ -6,10 +6,12 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
     public class CertificateHistory
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int HistoryId { get; set; }
 
         [Required]
-        [StringLength(30)]
+        [StringLength(36)]
         public string CertificateId { get; set; }
 
         [StringLength(20)]

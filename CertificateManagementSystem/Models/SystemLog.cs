@@ -6,12 +6,14 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
     public class SystemLog
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int LogId { get; set; }
 
-        [Required]
-        [StringLength(20)]
+        [StringLength(450)]  // Ensure the length matches the length of AspNetUsers.Id
         public string UserId { get; set; }
 
+        [Required]
         [StringLength(200)]
         public string Action { get; set; }
 
@@ -26,8 +28,7 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
         [StringLength(200)]
         public string Device { get; set; }
 
-        // Navigation properties
-        [ForeignKey("UserId")]
+        // Navigation property
         public virtual User User { get; set; }
     }
 }

@@ -1,0 +1,86 @@
+﻿@model CitizenshipCertificateandDiplomaManagementSystem.Models.Citizen
+
+@{
+    ViewData["Title"] = "Delete Citizen Record";
+}
+
+<div class="container mt-4">
+    <div class="card border-danger">
+        <div class="card-header bg-danger text-white">
+            <h3 class="card-title">
+                <i class="fas fa-exclamation-triangle"></i> Confirm Deletion
+            </h3>
+        </div>
+        <div class="card-body">
+            <div class="alert alert-warning">
+                <h5 class="alert-heading">Warning!</h5>
+                <p>You are about to permanently delete the citizen record for <strong>@Model.FullName</strong>. This action cannot be undone.</p>
+            </div>
+
+            <div class="row">
+                <!-- Personal Information Column -->
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3">Personal Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4 text-muted">Full Name</dt>
+                        <dd class="col-sm-8">@Model.FullName</dd>
+
+                        <dt class="col-sm-4 text-muted">Date of Birth</dt>
+                        <dd class="col-sm-8">@Model.DateOfBirth.ToString("dd/MM/yyyy")</dd>
+
+                        <dt class="col-sm-4 text-muted">Gender</dt>
+                        <dd class="col-sm-8">@Model.Gender</dd>
+
+                        <dt class="col-sm-4 text-muted">Place of Birth</dt>
+                        <dd class="col-sm-8">@Model.PlaceOfBirth</dd>
+                    </dl>
+                </div>
+
+                <!-- Contact Information Column -->
+                <div class="col-md-6">
+                    <h5 class="text-primary mb-3">Contact Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-4 text-muted">ID Number</dt>
+                        <dd class="col-sm-8">@Model.IdNumber</dd>
+
+                        <dt class="col-sm-4 text-muted">Address</dt>
+                        <dd class="col-sm-8">@Model.CurrentAddress</dd>
+
+                        <dt class="col-sm-4 text-muted">Email</dt>
+                        <dd class="col-sm-8">@Model.Email</dd>
+
+                        <dt class="col-sm-4 text-muted">Phone</dt>
+                        <dd class="col-sm-8">@Model.PhoneNumber</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- System Information -->
+            <div class="row mt-3">
+                <div class="col-12">
+                    <h5 class="text-primary mb-3">System Information</h5>
+                    <dl class="row">
+                        <dt class="col-sm-2 text-muted">Created</dt>
+                        <dd class="col-sm-4">@Model.CreatedDate.ToString("g")</dd>
+
+                        <dt class="col-sm-2 text-muted">Updated</dt>
+                        <dd class="col-sm-4">@Model.UpdatedDate?.ToString("g")</dd>
+                    </dl>
+                </div>
+            </div>
+
+            <!-- Delete Form -->
+            <form asp-action="Delete" class="mt-4">
+                <input type="hidden" asp-for="CitizenId" />
+                <div class="form-group text-center">
+                    <button type="submit" class="btn btn-danger btn-lg">
+                        <i class="fas fa-trash-alt"></i> Confirm Delete
+                    </button>
+                    <a asp-action="Index" class="btn btn-outline-secondary ml-2">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

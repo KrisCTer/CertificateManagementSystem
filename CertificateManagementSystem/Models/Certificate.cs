@@ -6,19 +6,21 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
     public class Certificate
     {
         [Key]
-        [StringLength(30)]
+        [StringLength(36)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public string CertificateId { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(36)]
         public string CitizenId { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(36)]
         public string CertificateTypeId { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(36)]
         public string IssuingInstitutionId { get; set; }
 
         [StringLength(50)]

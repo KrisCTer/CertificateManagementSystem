@@ -52,13 +52,11 @@ namespace CertificateManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(SystemConfiguration systemConfiguration)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.Add(systemConfiguration);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(systemConfiguration);
+
         }
 
         // Hiển thị form chỉnh sửa cấu hình hệ thống

@@ -1,12 +1,15 @@
 ﻿using CertificateManagementSystem.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 {
     public class CertificateType
     {
         [Key]
-        [StringLength(20)]
+        [StringLength(36)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public string CertificateTypeId { get; set; }
 
         [Required]

@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
@@ -66,18 +67,23 @@ namespace CertificateManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CertificateRequestz certificateRequest)
         {
-            if (ModelState.IsValid)
-            {
-                certificateRequest.SubmissionDate = DateTime.Now; // Ghi nhận ngày gửi yêu cầu
-                _context.Add(certificateRequest);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            certificateRequest.ProcessedBy = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+            // Set the current date for SubmissionDate
+            certificateRequest.SubmissionDate = DateTime.Now;
+
+            // Populate dropdowns for the view
             ViewData["CitizenId"] = new SelectList(_context.Citizens, "CitizenId", "FullName", certificateRequest.CitizenId);
             ViewData["CertificateTypeId"] = new SelectList(_context.CertificateTypes, "CertificateTypeId", "CertificateTypeName", certificateRequest.CertificateTypeId);
-            return View(certificateRequest);
+
+            // Add the certificateRequest to the context and save changes
+            _context.Add(certificateRequest);
+            await _context.SaveChangesAsync();
+
+            // Redirect after saving
+            return RedirectToAction(nameof(Index));
         }
+
 
         // Hiển thị form chỉnh sửa yêu cầu chứng nhận
         public async Task<IActionResult> Edit(int id)

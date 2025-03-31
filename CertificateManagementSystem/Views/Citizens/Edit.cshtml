@@ -1,0 +1,120 @@
+﻿@model CitizenshipCertificateandDiplomaManagementSystem.Models.Citizen
+
+@{
+    ViewData["Title"] = "Edit Citizen";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Edit Citizen</h1>
+        <a asp-action="Index" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Citizen Information</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Edit" class="form-horizontal">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="CitizenId" />
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="FullName" class="control-label font-weight-bold"></label>
+                            <input asp-for="FullName" class="form-control" placeholder="Enter full name" />
+                            <span asp-validation-for="FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="DateOfBirth" class="control-label font-weight-bold"></label>
+                            <input asp-for="DateOfBirth" type="date" class="form-control" />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Gender" class="control-label font-weight-bold"></label>
+                            <select asp-for="Gender" class="form-control">
+                                <option value="">-- Select Gender --</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="IdNumber" class="control-label font-weight-bold"></label>
+                            <input asp-for="IdNumber" class="form-control" placeholder="Enter ID number" />
+                            <span asp-validation-for="IdNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PlaceOfBirth" class="control-label font-weight-bold"></label>
+                            <input asp-for="PlaceOfBirth" class="form-control" placeholder="Enter place of birth" />
+                            <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="CurrentAddress" class="control-label font-weight-bold"></label>
+                            <input asp-for="CurrentAddress" class="form-control" placeholder="Enter current address" />
+                            <span asp-validation-for="CurrentAddress" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label font-weight-bold"></label>
+                            <input asp-for="Email" type="email" class="form-control" placeholder="Enter email address" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="PhoneNumber" class="control-label font-weight-bold"></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="CreatedDate" class="control-label font-weight-bold"></label>
+                            <input asp-for="CreatedDate" class="form-control" readonly />
+                        </div>
+
+                        <div class="form-group">
+                            <label asp-for="UpdatedDate" class="control-label font-weight-bold"></label>
+                            <input asp-for="UpdatedDate" class="form-control" readonly />
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group text-right mt-4">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Save Changes
+                    </button>
+                    <a asp-action="Index" class="btn btn-secondary ml-2">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        $(document).ready(function() {
+            // Set the current date for UpdatedDate when form is submitted
+            $('form').submit(function() {
+                var now = new Date();
+                var formattedDate = now.toISOString().slice(0, 16).replace('T', ' ');
+                $('#UpdatedDate').val(formattedDate);
+            });
+        });
+    </script>
+}

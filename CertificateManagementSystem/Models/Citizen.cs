@@ -1,12 +1,14 @@
 ﻿using CertificateManagementSystem.Models;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 {
     public class Citizen
     {
         [Key]
-        [StringLength(20)]
+        [StringLength(36)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string CitizenId { get; set; }
 
         [Required]
@@ -34,8 +36,6 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 
         [StringLength(20)]
         public string PhoneNumber { get; set; }
-
-        public byte[] ProfilePicture { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
