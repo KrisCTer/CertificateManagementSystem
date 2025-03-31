@@ -1,0 +1,71 @@
+﻿@model IEnumerable<CertificateManagementSystem.Models.Attachmentz>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.DocumentName)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DocumentType)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FilePath)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.UploadDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CertificateRequest)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Uploader)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DocumentType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FilePath)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.UploadDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CertificateRequest.CertificateTypeId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Uploader.Id)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AttachmentId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AttachmentId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AttachmentId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

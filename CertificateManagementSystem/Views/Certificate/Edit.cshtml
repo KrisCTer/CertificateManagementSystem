@@ -1,0 +1,109 @@
+﻿@model CitizenshipCertificateandDiplomaManagementSystem.Models.Certificate
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Edit</h1>
+
+<h4>Certificate</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="CertificateId" />
+            <div class="form-group">
+                <label asp-for="CitizenId" class="control-label"></label>
+                <select asp-for="CitizenId" class="form-control" asp-items="ViewBag.CitizenId"></select>
+                <span asp-validation-for="CitizenId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CertificateTypeId" class="control-label"></label>
+                <select asp-for="CertificateTypeId" class="form-control" asp-items="ViewBag.CertificateTypeId"></select>
+                <span asp-validation-for="CertificateTypeId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IssuingInstitutionId" class="control-label"></label>
+                <select asp-for="IssuingInstitutionId" class="form-control" asp-items="ViewBag.IssuingInstitutionId"></select>
+                <span asp-validation-for="IssuingInstitutionId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ReferenceNumber" class="control-label"></label>
+                <input asp-for="ReferenceNumber" class="form-control" />
+                <span asp-validation-for="ReferenceNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="IssueDate" class="control-label"></label>
+                <input asp-for="IssueDate" class="form-control" />
+                <span asp-validation-for="IssueDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ExpiryDate" class="control-label"></label>
+                <input asp-for="ExpiryDate" class="form-control" />
+                <span asp-validation-for="ExpiryDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Classification" class="control-label"></label>
+                <input asp-for="Classification" class="form-control" />
+                <span asp-validation-for="Classification" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Score" class="control-label"></label>
+                <input asp-for="Score" class="form-control" />
+                <span asp-validation-for="Score" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Status" class="control-label"></label>
+                <input asp-for="Status" class="form-control" />
+                <span asp-validation-for="Status" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SignedBy" class="control-label"></label>
+                <input asp-for="SignedBy" class="form-control" />
+                <span asp-validation-for="SignedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SignerTitle" class="control-label"></label>
+                <input asp-for="SignerTitle" class="form-control" />
+                <span asp-validation-for="SignerTitle" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FilePath" class="control-label"></label>
+                <input asp-for="FilePath" class="form-control" />
+                <span asp-validation-for="FilePath" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="QRCode" class="control-label"></label>
+                <input asp-for="QRCode" class="form-control" />
+                <span asp-validation-for="QRCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedDate" class="control-label"></label>
+                <input asp-for="CreatedDate" class="form-control" />
+                <span asp-validation-for="CreatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="UpdatedDate" class="control-label"></label>
+                <input asp-for="UpdatedDate" class="form-control" />
+                <span asp-validation-for="UpdatedDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
