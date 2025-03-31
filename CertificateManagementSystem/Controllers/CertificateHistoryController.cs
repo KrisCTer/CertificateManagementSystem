@@ -7,29 +7,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    public class CertificateController : Controller
+    public class CertificateHistoryController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public CertificateController(ApplicationDbContext context)
+        public CertificateHistoryController(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<IActionResult> Index()
         {
-            var certificates = await _context.Certificates.Include(c => c.Citizen).Include(c => c.CertificateType).Include(c => c.IssuingInstitution).ToListAsync();
-            return View(certificates);
+            var histories = await _context.CertificateHistories.ToListAsync();
+            return View(histories);
         }
 
-        public async Task<IActionResult> Details(string id)
+        public async Task<IActionResult> Details(int id)
         {
-            var certificate = await _context.Certificates.Include(c => c.Citizen).Include(c => c.CertificateType).Include(c => c.IssuingInstitution).FirstOrDefaultAsync(c => c.CertificateId == id);
-            if (certificate == null)
+            var history = await _context.CertificateHistories.FindAsync(id);
+            if (history == null)
             {
                 return NotFound();
             }
-            return View(certificate);
+            return View(history);
         }
 
         public IActionResult Create()
@@ -39,32 +39,32 @@ namespace CertificateManagementSystem.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Certificate certificate)
+        public async Task<IActionResult> Create(CertificateHistory history)
         {
             if (ModelState.IsValid)
             {
-                _context.Certificates.Add(certificate);
+                _context.CertificateHistories.Add(history);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(certificate);
+            return View(history);
         }
 
-        public async Task<IActionResult> Edit(string id)
+        public async Task<IActionResult> Edit(int id)
         {
-            var certificate = await _context.Certificates.FindAsync(id);
-            if (certificate == null)
+            var history = await _context.CertificateHistories.FindAsync(id);
+            if (history == null)
             {
                 return NotFound();
             }
-            return View(certificate);
+            return View(history);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, Certificate certificate)
+        public async Task<IActionResult> Edit(int id, CertificateHistory history)
         {
-            if (id != certificate.CertificateId)
+            if (id != history.HistoryId)
             {
                 return NotFound();
             }
@@ -73,12 +73,12 @@ namespace CertificateManagementSystem.Controllers
             {
                 try
                 {
-                    _context.Update(certificate);
+                    _context.Update(history);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CertificateExists(certificate.CertificateId))
+                    if (!HistoryExists(history.HistoryId))
                     {
                         return NotFound();
                     }
@@ -89,32 +89,32 @@ namespace CertificateManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(certificate);
+            return View(history);
         }
 
-        public async Task<IActionResult> Delete(string id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var certificate = await _context.Certificates.FindAsync(id);
-            if (certificate == null)
+            var history = await _context.CertificateHistories.FindAsync(id);
+            if (history == null)
             {
                 return NotFound();
             }
-            return View(certificate);
+            return View(history);
         }
 
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(string id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var certificate = await _context.Certificates.FindAsync(id);
-            _context.Certificates.Remove(certificate);
+            var history = await _context.CertificateHistories.FindAsync(id);
+            _context.CertificateHistories.Remove(history);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool CertificateExists(string id)
+        private bool HistoryExists(int id)
         {
-            return _context.Certificates.Any(e => e.CertificateId == id);
+            return _context.CertificateHistories.Any(e => e.HistoryId == id);
         }
     }
 }

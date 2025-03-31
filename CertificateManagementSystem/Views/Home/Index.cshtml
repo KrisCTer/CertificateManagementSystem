@@ -2,7 +2,194 @@
     ViewData["Title"] = "Home Page";
 }
 
-@* <div class="text-center"> *@
-@*     <h1 class="display-4">Welcome</h1> *@
-@*     <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p> *@
-@* </div> *@
+<!-- Top Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light mb-4">
+    <div class="container-fluid">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge bg-danger rounded-pill">3</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#">Yêu cầu chứng chỉ mới</a></li>
+                        <li><a class="dropdown-item" href="#">Xác minh đang chờ xử lý</a></li>
+                        <li><a class="dropdown-item" href="#">Cảnh báo bảo mật</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                        <img src="/api/placeholder/32/32" alt="User" class="rounded-circle me-2" width="32" height="32">
+                        <span>Admin User</span>
+                    </a>
+                    <!-- User dropdown menu would go here -->
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Dashboard Section -->
+<div class="container-fluid">
+    <h1 class="h3 mb-4">Bảng điều khiển</h1>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-stat stat-blue">
+                <i class="fas fa-users"></i>
+                <h4>@(Model?.CitizensCount ?? 0)</h4>
+                <p>Công dân</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-stat stat-green">
+                <i class="fas fa-certificate"></i>
+                <h4>@(Model?.CertificatesCount ?? 0)</h4>
+                <p>Chứng chỉ</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-stat stat-yellow">
+                <i class="fas fa-file-alt"></i>
+                <h4>@(Model?.PendingRequestsCount ?? 0)</h4>
+                <p>Yêu cầu đang chờ</p>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="dashboard-stat stat-red">
+                <i class="fas fa-check-circle"></i>
+                <h4>@(Model?.RecentVerificationsCount ?? 0)</h4>
+                <p>Xác minh gần đây</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Certificate Requests Section -->
+<div class="row mt-4">
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span>Yêu cầu chứng chỉ gần đây</span>
+                <a href="#" class="btn btn-sm btn-primary">Xem tất cả</a>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Công dân</th>
+                                <th>Loại chứng chỉ</th>
+                                <th>Ngày gửi</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model?.CertificateRequests != null && Model.CertificateRequests.Any())
+                            {
+                                @foreach (var request in Model.CertificateRequests)
+                                {
+                                    <tr>
+                                        <td>@request.RequestId</td>
+                                        <td>@(request.Citizen?.FullName ?? "N/A")</td>
+                                        <td>@(request.CertificateType?.TypeName ?? "N/A")</td>
+                                        <td>@(request.SubmissionDate?.ToString("dd/MM/yyyy") ?? "N/A")</td>
+                                        <td>
+                                            @if (request.Status == "Đang xử lý")
+                                            {
+                                                <span class="badge bg-warning text-dark">@request.Status</span>
+                                            }
+                                            else if (request.Status == "Hoàn thành")
+                                            {
+                                                <span class="badge bg-success">@request.Status</span>
+                                            }
+                                            else if (request.Status == "Từ chối")
+                                            {
+                                                <span class="badge bg-danger">@request.Status</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-info">@request.Status</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
+                                            @if (request.Status == "Đang xử lý")
+                                            {
+                                                <button class="btn btn-sm btn-success btn-action"><i class="fas fa-check"></i></button>
+                                            }
+                                            else if (request.Status == "Từ chối")
+                                            {
+                                                <button class="btn btn-sm btn-warning btn-action"><i class="fas fa-edit"></i></button>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr><td colspan="6">No data available.</td></tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="card-header">
+                Thống kê chứng chỉ theo loại
+            </div>
+            <div class="card-body">
+                <img src="/api/placeholder/350/250" alt="Biểu đồ" class="img-fluid">
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-header">
+                Hoạt động gần đây
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Chứng chỉ mới được cấp</h6>
+                            <small>3 giờ trước</small>
+                        </div>
+                        <p class="mb-1">Chứng chỉ CNTT đã được cấp cho Nguyễn Văn A.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Yêu cầu xác minh mới</h6>
+                            <small>5 giờ trước</small>
+                        </div>
+                        <p class="mb-1">Công ty XYZ yêu cầu xác minh bằng đại học của Trần Thị B.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Cập nhật hồ sơ công dân</h6>
+                            <small>8 giờ trước</small>
+                        </div>
+                        <p class="mb-1">Thông tin liên lạc của Lê Văn C đã được cập nhật.</p>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">Đăng nhập quản trị viên</h6>
+                            <small>1 ngày trước</small>
+                        </div>
+                        <p class="mb-1">Quản trị viên đã đăng nhập và thực hiện các thay đổi cấu hình.</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

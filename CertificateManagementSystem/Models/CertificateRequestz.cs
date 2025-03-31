@@ -36,13 +36,13 @@ namespace CertificateManagementSystem.Models
 
         // Navigation properties
         [ForeignKey("CitizenId")]
-        public virtual Citizen Citizen { get; set; }
+        public virtual Citizen? Citizen { get; set; }
 
         [ForeignKey("CertificateTypeId")]
-        public virtual CertificateType CertificateType { get; set; }
+        public virtual CertificateType? CertificateType { get; set; }
 
         [ForeignKey("ProcessedBy")]
-        public virtual User Processor { get; set; }
+        public virtual User? Processor { get; set; }
 
         public virtual ICollection<Attachmentz> Attachments { get; set; }
     }

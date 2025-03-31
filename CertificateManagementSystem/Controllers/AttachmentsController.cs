@@ -1,73 +1,120 @@
-﻿using CertificateManagementSystem.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AttachmentsController : Controller
+    public class AttachmentzController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
         private readonly ApplicationDbContext _context;
 
-        public AttachmentsController(ApplicationDbContext context)
+        public AttachmentzController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/Attachments/Request/5
-        [HttpGet("Request/{requestId}")]
-        public async Task<ActionResult<IEnumerable<Attachmentz>>> GetRequestAttachments(int requestId)
+        public async Task<IActionResult> Index()
         {
-            return await _context.Attachments
-                .Where(a => a.RequestId == requestId)
-                .ToListAsync();
+            var attachments = await _context.Attachments.ToListAsync();
+            return View(attachments);
         }
 
-        // GET: api/Attachments/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Attachmentz>> GetAttachment(int id)
+        public async Task<IActionResult> Details(int id)
         {
             var attachment = await _context.Attachments.FindAsync(id);
-
             if (attachment == null)
             {
                 return NotFound();
             }
-
-            return attachment;
+            return View(attachment);
         }
 
-        // POST: api/Attachments
+        public IActionResult Create()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public async Task<ActionResult<Attachmentz>> CreateAttachment(Attachmentz attachment)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Attachmentz attachment)
         {
-            attachment.UploadDate = DateTime.Now;
-            _context.Attachments.Add(attachment);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetAttachment", new { id = attachment.AttachmentId }, attachment);
+            if (ModelState.IsValid)
+            {
+                _context.Attachments.Add(attachment);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(attachment);
         }
 
-        // DELETE: api/Attachments/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Attachmentz>> DeleteAttachment(int id)
+        public async Task<IActionResult> Edit(int id)
         {
             var attachment = await _context.Attachments.FindAsync(id);
             if (attachment == null)
             {
                 return NotFound();
             }
+            return View(attachment);
+        }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Attachmentz attachment)
+        {
+            if (id != attachment.AttachmentId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(attachment);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!AttachmentExists(attachment.AttachmentId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View(attachment);
+        }
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var attachment = await _context.Attachments.FindAsync(id);
+            if (attachment == null)
+            {
+                return NotFound();
+            }
+            return View(attachment);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var attachment = await _context.Attachments.FindAsync(id);
             _context.Attachments.Remove(attachment);
             await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
 
-            return attachment;
+        private bool AttachmentExists(int id)
+        {
+            return _context.Attachments.Any(e => e.AttachmentId == id);
         }
     }
 }

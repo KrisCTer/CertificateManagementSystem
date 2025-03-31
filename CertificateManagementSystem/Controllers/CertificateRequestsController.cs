@@ -9,10 +9,7 @@ namespace CertificateManagementSystem.Controllers
     [ApiController]
     public class CertificateRequestsController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
         private readonly ApplicationDbContext _context;
 
         public CertificateRequestsController(ApplicationDbContext context)
@@ -30,6 +27,20 @@ namespace CertificateManagementSystem.Controllers
                 .Include(r => r.Processor)
                 .ToListAsync();
         }
+        public async Task<IActionResult> Index()
+        {
+            var requests = await _context.CertificateRequests
+                .Include(r => r.Citizen)
+                .Include(r => r.CertificateType)
+                .Include(r => r.Processor)
+                .ToListAsync();
+
+            if (requests == null) // Prevent null
+                requests = new List<CertificateRequestz>();
+
+            return View(requests);
+        }
+
 
         // GET: api/CertificateRequests/5
         [HttpGet("{id}")]
