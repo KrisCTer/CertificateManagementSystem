@@ -1,0 +1,71 @@
+Index: CertificateManagementSystem/Controllers/CertificateRequestsController.cs
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>using System.Security.Cryptography.X509Certificates;\r\nusing CitizenshipCertificateandDiplomaManagementSystem.Models;\r\nusing Microsoft.AspNetCore.Mvc;\r\nusing Microsoft.EntityFrameworkCore;\r\n\r\nnamespace CertificateManagementSystem.Controllers\r\n{\r\n    [Route(\"api/[controller]\")]\r\n    [ApiController]\r\n    public class CertificateRequestsController : Controller\r\n    {\r\n        public IActionResult Index()\r\n        {\r\n            return View();\r\n        }\r\n        private readonly ApplicationDbContext _context;\r\n\r\n        public CertificateRequestsController(ApplicationDbContext context)\r\n        {\r\n            _context = context;\r\n        }\r\n\r\n        // GET: api/CertificateRequests\r\n        [HttpGet]\r\n        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCertificateRequests()\r\n        {\r\n            return await _context.CertificateRequests\r\n                .Include(r => r.Citizen)\r\n                .Include(r => r.CertificateType)\r\n                .Include(r => r.Processor)\r\n                .ToListAsync();\r\n        }\r\n\r\n        // GET: api/CertificateRequests/5\r\n        [HttpGet(\"{id}\")]\r\n        public async Task<ActionResult<CertificateRequest>> GetCertificateRequest(int id)\r\n        {\r\n            var request = await _context.CertificateRequests\r\n                .Include(r => r.Citizen)\r\n                .Include(r => r.CertificateType)\r\n                .Include(r => r.Processor)\r\n                .Include(r => r.Attachments)\r\n                .FirstOrDefaultAsync(r => r.RequestId == id);\r\n\r\n            if (request == null)\r\n            {\r\n                return NotFound();\r\n            }\r\n\r\n            return request;\r\n        }\r\n\r\n        // GET: api/CertificateRequests/Citizen/5\r\n        [HttpGet(\"Citizen/{citizenId}\")]\r\n        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCitizenRequests(string citizenId)\r\n        {\r\n            return await _context.CertificateRequests\r\n                .Where(r => r.CitizenId == citizenId)\r\n                .Include(r => r.CertificateType)\r\n                .Include(r => r.Processor)\r\n                .ToListAsync();\r\n        }\r\n\r\n        // POST: api/CertificateRequests\r\n        [HttpPost]\r\n        public async Task<ActionResult<CertificateRequest>> CreateCertificateRequest(CertificateRequest request)\r\n        {\r\n            request.SubmissionDate = DateTime.Now;\r\n            request.Status = \"Pending\"; // Default status for new requests\r\n\r\n            _context.CertificateRequests.Add(request);\r\n            await _context.SaveChangesAsync();\r\n\r\n            return CreatedAtAction(\"GetCertificateRequest\", new { id = request.RequestId }, request);\r\n        }\r\n\r\n        // PUT: api/CertificateRequests/5\r\n        [HttpPut(\"{id}\")]\r\n        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequest request)\r\n        {\r\n            if (id != request.RequestId)\r\n            {\r\n                return BadRequest();\r\n            }\r\n\r\n            _context.Entry(request).State = EntityState.Modified;\r\n            _context.Entry(request).Property(x => x.SubmissionDate).IsModified = false;\r\n\r\n            try\r\n            {\r\n                await _context.SaveChangesAsync();\r\n            }\r\n            catch (DbUpdateConcurrencyException)\r\n            {\r\n                if (!CertificateRequestExists(id))\r\n                {\r\n                    return NotFound();\r\n                }\r\n                else\r\n                {\r\n                    throw;\r\n                }\r\n            }\r\n\r\n            return NoContent();\r\n        }\r\n\r\n        // POST: api/CertificateRequests/5/Process\r\n        [HttpPost(\"{id}/Process\")]\r\n        public async Task<IActionResult> ProcessRequest(int id, [FromBody] RequestProcessModel model)\r\n        {\r\n            var request = await _context.CertificateRequests.FindAsync(id);\r\n\r\n            if (request == null)\r\n            {\r\n                return NotFound();\r\n            }\r\n\r\n            request.Status = model.NewStatus;\r\n            request.ProcessedBy = model.ProcessedBy;\r\n            request.Notes = model.Notes;\r\n\r\n            await _context.SaveChangesAsync();\r\n\r\n            return NoContent();\r\n        }\r\n\r\n        // DELETE: api/CertificateRequests/5\r\n        [HttpDelete(\"{id}\")]\r\n        public async Task<ActionResult<CertificateRequest>> DeleteCertificateRequest(int id)\r\n        {\r\n            var request = await _context.CertificateRequests.FindAsync(id);\r\n            if (request == null)\r\n            {\r\n                return NotFound();\r\n            }\r\n\r\n            _context.CertificateRequests.Remove(request);\r\n            await _context.SaveChangesAsync();\r\n\r\n            return request;\r\n        }\r\n\r\n        private bool CertificateRequestExists(int id)\r\n        {\r\n            return _context.CertificateRequests.Any(e => e.RequestId == id);\r\n        }\r\n    }\r\n}\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/CertificateManagementSystem/Controllers/CertificateRequestsController.cs b/CertificateManagementSystem/Controllers/CertificateRequestsController.cs
+--- a/CertificateManagementSystem/Controllers/CertificateRequestsController.cs	(revision 257769bf31dcbaaeb9162e7eb15be3eb46c658c2)
++++ b/CertificateManagementSystem/Controllers/CertificateRequestsController.cs	(date 1743325443200)
+@@ -1,4 +1,5 @@
+-using System.Security.Cryptography.X509Certificates;
++
++using CertificateManagementSystem.Models;
+ using CitizenshipCertificateandDiplomaManagementSystem.Models;
+ using Microsoft.AspNetCore.Mvc;
+ using Microsoft.EntityFrameworkCore;
+@@ -22,7 +23,7 @@
+ 
+         // GET: api/CertificateRequests
+         [HttpGet]
+-        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCertificateRequests()
++        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCertificateRequests()
+         {
+             return await _context.CertificateRequests
+                 .Include(r => r.Citizen)
+@@ -33,7 +34,7 @@
+ 
+         // GET: api/CertificateRequests/5
+         [HttpGet("{id}")]
+-        public async Task<ActionResult<CertificateRequest>> GetCertificateRequest(int id)
++        public async Task<ActionResult<CertificateRequestz>> GetCertificateRequest(int id)
+         {
+             var request = await _context.CertificateRequests
+                 .Include(r => r.Citizen)
+@@ -52,7 +53,7 @@
+ 
+         // GET: api/CertificateRequests/Citizen/5
+         [HttpGet("Citizen/{citizenId}")]
+-        public async Task<ActionResult<IEnumerable<CertificateRequest>>> GetCitizenRequests(string citizenId)
++        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCitizenRequests(string citizenId)
+         {
+             return await _context.CertificateRequests
+                 .Where(r => r.CitizenId == citizenId)
+@@ -63,7 +64,7 @@
+ 
+         // POST: api/CertificateRequests
+         [HttpPost]
+-        public async Task<ActionResult<CertificateRequest>> CreateCertificateRequest(CertificateRequest request)
++        public async Task<ActionResult<CertificateRequestz>> CreateCertificateRequest(CertificateRequestz request)
+         {
+             request.SubmissionDate = DateTime.Now;
+             request.Status = "Pending"; // Default status for new requests
+@@ -76,7 +77,7 @@
+ 
+         // PUT: api/CertificateRequests/5
+         [HttpPut("{id}")]
+-        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequest request)
++        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequestz request)
+         {
+             if (id != request.RequestId)
+             {
+@@ -127,7 +128,7 @@
+ 
+         // DELETE: api/CertificateRequests/5
+         [HttpDelete("{id}")]
+-        public async Task<ActionResult<CertificateRequest>> DeleteCertificateRequest(int id)
++        public async Task<ActionResult<CertificateRequestz>> DeleteCertificateRequest(int id)
+         {
+             var request = await _context.CertificateRequests.FindAsync(id);
+             if (request == null)
