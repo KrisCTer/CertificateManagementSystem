@@ -20,6 +20,9 @@ namespace CertificateManagementSystem.Controllers
             _context = context;
         }
 
+
+
+
         // GET: api/Attachments/Request/5
         [HttpGet("Request/{requestId}")]
         public async Task<ActionResult<IEnumerable<Attachmentz>>> GetRequestAttachments(int requestId)
