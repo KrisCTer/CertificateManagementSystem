@@ -2,12 +2,13 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-
 namespace CertificateManagementSystem.Models
 {
     public class Attachmentz
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int AttachmentId { get; set; }
 
         [Required]
@@ -24,7 +25,8 @@ namespace CertificateManagementSystem.Models
 
         public DateTime UploadDate { get; set; }
 
-        [StringLength(20)]
+        // Modify UploadedBy to nvarchar(450) to match AspNetUsers.Id
+        [StringLength(450)]
         public string UploadedBy { get; set; }
 
         [StringLength(500)]

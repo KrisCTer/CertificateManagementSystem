@@ -1,10 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CitizenshipCertificateandDiplomaManagementSystem.Models;
+﻿using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace CertificateManagementSystem.Controllers
 {
@@ -50,16 +51,20 @@ namespace CertificateManagementSystem.Controllers
         // POST: Citizens/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CitizenId,FullName,DateOfBirth,Gender,IdNumber,PlaceOfBirth,CurrentAddress,Email,PhoneNumber,ProfilePicture,CreatedDate,UpdatedDate")] Citizen citizen)
+        public async Task<IActionResult> Create(Citizen citizen)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(citizen);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(citizen);
+            // Tạo ID tự động bằng GUID
+            citizen.CitizenId = Guid.NewGuid().ToString();
+
+            // Lưu vào database
+            _context.Add(citizen);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
         }
+
+
+
 
         // GET: Citizens/Edit/5
         public async Task<IActionResult> Edit(string id)

@@ -45,13 +45,9 @@ namespace CertificateManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CertificateVerification verification)
         {
-            if (ModelState.IsValid)
-            {
                 _context.CertificateVerifications.Add(verification);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(verification);
         }
 
         public async Task<IActionResult> Edit(int id)

@@ -7,14 +7,16 @@ namespace CertificateManagementSystem.Models
     public class CertificateRequestz
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public int RequestId { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(36)]
         public string CitizenId { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(36)]
         public string CertificateTypeId { get; set; }
 
         [StringLength(50)]
@@ -28,7 +30,8 @@ namespace CertificateManagementSystem.Models
         [DataType(DataType.Date)]
         public DateTime? ExpectedCompletionDate { get; set; }
 
-        [StringLength(20)]
+        // Modify ProcessedBy to match the length of AspNetUsers.Id (nvarchar(450))
+        [StringLength(450)]
         public string ProcessedBy { get; set; }
 
         [StringLength(500)]
@@ -36,14 +39,15 @@ namespace CertificateManagementSystem.Models
 
         // Navigation properties
         [ForeignKey("CitizenId")]
-        public virtual Citizen? Citizen { get; set; }
+        public virtual Citizen Citizen { get; set; }
 
         [ForeignKey("CertificateTypeId")]
-        public virtual CertificateType? CertificateType { get; set; }
+        public virtual CertificateType CertificateType { get; set; }
 
         [ForeignKey("ProcessedBy")]
-        public virtual User? Processor { get; set; }
+        public virtual User Processor { get; set; }
 
+        // Attachments related to this request
         public virtual ICollection<Attachmentz> Attachments { get; set; }
     }
 }

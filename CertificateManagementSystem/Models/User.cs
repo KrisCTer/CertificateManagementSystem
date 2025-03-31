@@ -1,18 +1,21 @@
-﻿using System.ComponentModel.DataAnnotations;
-using CertificateManagementSystem.Models;
+﻿using CertificateManagementSystem.Models;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 {
     public class User : IdentityUser
     {
         [Key]
-        [StringLength(20)]
+        [StringLength(36)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public string UserId { get; set; }
 
         [Required]
         [StringLength(50)]
-        public string Username { get; set; }
+        public string UserName { get; set; }
 
         [Required]
         [StringLength(100)]

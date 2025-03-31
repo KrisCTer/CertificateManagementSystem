@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
@@ -34,20 +35,33 @@ namespace CertificateManagementSystem.Controllers
 
         public IActionResult Create()
         {
+            // Get the list of CertificateTypes from the database
+            var certificateTypes = _context.CertificateTypes.ToList();
+
+            // Populate the CertificateTypeId dropdown with the CertificateTypeId as the value and CertificateTypeName as the text
+            ViewBag.CertificateTypeId = new SelectList(certificateTypes, "CertificateTypeId", "CertificateTypeName"); // adjust property names as necessary
+
+            // Similarly populate other dropdowns
+            ViewBag.CitizenId = new SelectList(_context.Citizens, "CitizenId", "FullName");
+            ViewBag.IssuingInstitutionId = new SelectList(_context.EducationalInstitutions, "InstitutionId", "InstitutionName");
+
             return View();
         }
 
+
+
+
+
+
+        // POST: Certificates/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Certificate certificate)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Certificates.Add(certificate);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(certificate);
+
+            _context.Add(certificate);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index)); // Redirect to list view after creating the certificate
         }
 
         public async Task<IActionResult> Edit(string id)
@@ -111,7 +125,20 @@ namespace CertificateManagementSystem.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> CertificateStatistics()
+        {
+            // Lấy thống kê số lượng chứng chỉ theo loại
+            var statistics = await _context.Certificates
+                .GroupBy(c => c.CertificateType.CertificateTypeName)
+                .Select(g => new
+                {
+                    CertificateType = g.Key,
+                    Count = g.Count()
+                })
+                .ToListAsync();
 
+            return View(statistics);
+        }
         private bool CertificateExists(string id)
         {
             return _context.Certificates.Any(e => e.CertificateId == id);

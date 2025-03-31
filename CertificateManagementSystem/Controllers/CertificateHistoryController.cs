@@ -41,13 +41,10 @@ namespace CertificateManagementSystem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CertificateHistory history)
         {
-            if (ModelState.IsValid)
-            {
+
                 _context.CertificateHistories.Add(history);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
-            }
-            return View(history);
         }
 
         public async Task<IActionResult> Edit(int id)

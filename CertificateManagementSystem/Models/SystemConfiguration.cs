@@ -6,12 +6,16 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
     public class SystemConfiguration
     {
         [Key]
-        [StringLength(50)]
+        [StringLength(36)]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+
         public string ConfigId { get; set; }
 
+        [Required]
         [StringLength(100)]
         public string ConfigName { get; set; }
 
+        [Required]
         public string ConfigValue { get; set; }
 
         [StringLength(500)]
@@ -19,11 +23,10 @@ namespace CitizenshipCertificateandDiplomaManagementSystem.Models
 
         public DateTime UpdatedDate { get; set; }
 
-        [StringLength(20)]
+        [StringLength(450)]
         public string UpdatedBy { get; set; }
 
-        // Navigation properties
-        [ForeignKey("UpdatedBy")]
-        public virtual User User { get; set; }
+        public virtual User UpdatedByUser { get; set; }
     }
+
 }

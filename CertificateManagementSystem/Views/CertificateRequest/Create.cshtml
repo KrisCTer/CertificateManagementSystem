@@ -6,7 +6,7 @@
 
 <h1>Create</h1>
 
-<h4>CertificateRequestz</h4>
+<h4>Yêu cầu</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -42,7 +42,8 @@
             </div>
             <div class="form-group">
                 <label asp-for="ProcessedBy" class="control-label"></label>
-                <select asp-for="ProcessedBy" class ="form-control" asp-items="ViewBag.ProcessedBy"></select>
+                <input asp-for="ProcessedBy" class="form-control" />
+                <span asp-validation-for="ProcessedBy" class="form-control"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Notes" class="control-label"></label>

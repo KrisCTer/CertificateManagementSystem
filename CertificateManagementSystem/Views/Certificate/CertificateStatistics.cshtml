@@ -1,0 +1,25 @@
+﻿@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Thống kê chứng chỉ";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Loại chứng chỉ</th>
+            <th>Số lượng chứng chỉ</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var stat in Model)
+        {
+            <tr>
+                <td>@stat.CertificateType</td>
+                <td>@stat.Count</td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,147 @@
+﻿@model CitizenshipCertificateandDiplomaManagementSystem.Models.Citizen
+
+@{
+    ViewData["Title"] = "Create New Citizen";
+}
+
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create New Citizen</h1>
+        <a asp-action="Index" class="d-none d-sm-inline-block btn btn-sm btn-secondary shadow-sm">
+            <i class="fas fa-arrow-left fa-sm text-white-50"></i> Back to List
+        </a>
+    </div>
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3 bg-primary text-white">
+            <h6 class="m-0 font-weight-bold">Citizen Registration Form</h6>
+        </div>
+        <div class="card-body">
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <div asp-validation-summary="ModelOnly" class="alert alert-danger"></div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Personal Information Section -->
+                        <div class="form-section mb-4">
+                            <h5 class="text-primary mb-3"><i class="fas fa-user-circle mr-2"></i>Personal Information</h5>
+
+                            <div class="form-group">
+                                <label asp-for="FullName" class="font-weight-bold">Full Name <span class="text-danger">*</span></label>
+                                <input asp-for="FullName" class="form-control" placeholder="Enter full name" required />
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="DateOfBirth" class="font-weight-bold">Date of Birth <span class="text-danger">*</span></label>
+                                    <input asp-for="DateOfBirth" type="date" class="form-control" required />
+                                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Gender" class="font-weight-bold">Gender <span class="text-danger">*</span></label>
+                                    <select asp-for="Gender" class="form-control" required>
+                                        <option value="">-- Select --</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                    <span asp-validation-for="Gender" class="text-danger"></span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="PlaceOfBirth" class="font-weight-bold">Place of Birth</label>
+                                <input asp-for="PlaceOfBirth" class="form-control" placeholder="City, Province" />
+                                <span asp-validation-for="PlaceOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Identification Section -->
+                        <div class="form-section mb-4">
+                            <h5 class="text-primary mb-3"><i class="fas fa-id-card mr-2"></i>Identification</h5>
+
+                            <div class="form-group">
+                                <label asp-for="IdNumber" class="font-weight-bold">ID Number <span class="text-danger">*</span></label>
+                                <input asp-for="IdNumber" class="form-control" placeholder="Enter ID number" required />
+                                <span asp-validation-for="IdNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="form-group">
+                                <label asp-for="CurrentAddress" class="font-weight-bold">Current Address <span class="text-danger">*</span></label>
+                                <input asp-for="CurrentAddress" class="form-control" placeholder="Full address" required />
+                                <span asp-validation-for="CurrentAddress" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information Section -->
+                        <div class="form-section">
+                            <h5 class="text-primary mb-3"><i class="fas fa-address-book mr-2"></i>Contact Information</h5>
+
+                            <div class="form-row">
+                                <div class="form-group col-md-6">
+                                    <label asp-for="Email" class="font-weight-bold">Email</label>
+                                    <input asp-for="Email" type="email" class="form-control" placeholder="example@domain.com" />
+                                    <span asp-validation-for="Email" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-6">
+                                    <label asp-for="PhoneNumber" class="font-weight-bold">Phone Number <span class="text-danger">*</span></label>
+                                    <input asp-for="PhoneNumber" class="form-control" placeholder="+84..." required />
+                                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- System Fields (hidden) -->
+                <input type="hidden" asp-for="CitizenId" />
+                <input type="hidden" asp-for="CreatedDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                <input type="hidden" asp-for="UpdatedDate" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+
+                <div class="form-group text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg px-5">
+                        <i class="fas fa-user-plus mr-2"></i> Create Citizen
+                    </button>
+                    <button type="reset" class="btn btn-outline-secondary ml-3">
+                        <i class="fas fa-undo mr-2"></i> Reset Form
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Client-side validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Set current date/time for system fields
+        $(document).ready(function() {
+            var now = new Date();
+            var formattedDate = now.toISOString().slice(0, 16);
+            $('#CreatedDate').val(formattedDate);
+            $('#UpdatedDate').val(formattedDate);
+        });
+    </script>
+}
