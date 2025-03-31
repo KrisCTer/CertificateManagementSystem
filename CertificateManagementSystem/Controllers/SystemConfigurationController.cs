@@ -7,23 +7,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    public class UserController : Controller
+    public class SystemConfigurationController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public UserController(ApplicationDbContext context)
+        public SystemConfigurationController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // Hiển thị tất cả người dùng
+        // Hiển thị danh sách cấu hình hệ thống
         public async Task<IActionResult> Index()
         {
-            var users = await _context.Users.ToListAsync();
-            return View(users);
+            var configurations = await _context.SystemConfigurations.ToListAsync();
+            return View(configurations);
         }
 
-        // Hiển thị chi tiết người dùng
+        // Hiển thị chi tiết cấu hình hệ thống
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -31,38 +31,37 @@ namespace CertificateManagementSystem.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+            var systemConfiguration = await _context.SystemConfigurations
+                .FirstOrDefaultAsync(m => m.ConfigId == id);
+
+            if (systemConfiguration == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(systemConfiguration);
         }
 
-        // Hiển thị form tạo mới người dùng
+        // Hiển thị form tạo cấu hình hệ thống mới
         public IActionResult Create()
         {
             return View();
         }
 
-        // Xử lý tạo mới người dùng
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(User user)
+        public async Task<IActionResult> Create(SystemConfiguration systemConfiguration)
         {
             if (ModelState.IsValid)
             {
-                user.CreatedDate = DateTime.Now;
-                _context.Add(user);
+                _context.Add(systemConfiguration);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(systemConfiguration);
         }
 
-        // Hiển thị form chỉnh sửa người dùng
+        // Hiển thị form chỉnh sửa cấu hình hệ thống
         public async Task<IActionResult> Edit(string id)
         {
             if (id == null)
@@ -70,20 +69,19 @@ namespace CertificateManagementSystem.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users.FindAsync(id);
-            if (user == null)
+            var systemConfiguration = await _context.SystemConfigurations.FindAsync(id);
+            if (systemConfiguration == null)
             {
                 return NotFound();
             }
-            return View(user);
+            return View(systemConfiguration);
         }
 
-        // Xử lý chỉnh sửa người dùng
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(string id, User user)
+        public async Task<IActionResult> Edit(string id, SystemConfiguration systemConfiguration)
         {
-            if (id != user.UserId)
+            if (id != systemConfiguration.ConfigId)
             {
                 return NotFound();
             }
@@ -92,12 +90,12 @@ namespace CertificateManagementSystem.Controllers
             {
                 try
                 {
-                    _context.Update(user);
+                    _context.Update(systemConfiguration);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!UserExists(user.UserId))
+                    if (!SystemConfigurationExists(systemConfiguration.ConfigId))
                     {
                         return NotFound();
                     }
@@ -108,10 +106,10 @@ namespace CertificateManagementSystem.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(user);
+            return View(systemConfiguration);
         }
 
-        // Hiển thị form xóa người dùng
+        // Hiển thị form xác nhận xóa cấu hình hệ thống
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -119,30 +117,31 @@ namespace CertificateManagementSystem.Controllers
                 return NotFound();
             }
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.UserId == id);
-            if (user == null)
+            var systemConfiguration = await _context.SystemConfigurations
+                .FirstOrDefaultAsync(m => m.ConfigId == id);
+
+            if (systemConfiguration == null)
             {
                 return NotFound();
             }
 
-            return View(user);
+            return View(systemConfiguration);
         }
 
-        // Xử lý xóa người dùng
+        // Xóa cấu hình hệ thống
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
         {
-            var user = await _context.Users.FindAsync(id);
-            _context.Users.Remove(user);
+            var systemConfiguration = await _context.SystemConfigurations.FindAsync(id);
+            _context.SystemConfigurations.Remove(systemConfiguration);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool UserExists(string id)
+        private bool SystemConfigurationExists(string id)
         {
-            return _context.Users.Any(e => e.UserId == id);
+            return _context.SystemConfigurations.Any(e => e.ConfigId == id);
         }
     }
 }

@@ -1,155 +1,171 @@
-﻿using CertificateManagementSystem.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using CertificateManagementSystem.Models;
 using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CertificateRequestsController : Controller
+    public class CertificateRequestController : Controller
     {
-        
         private readonly ApplicationDbContext _context;
 
-        public CertificateRequestsController(ApplicationDbContext context)
+        public CertificateRequestController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/CertificateRequests
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCertificateRequests()
-        {
-            return await _context.CertificateRequests
-                .Include(r => r.Citizen)
-                .Include(r => r.CertificateType)
-                .Include(r => r.Processor)
-                .ToListAsync();
-        }
+        // Hiển thị tất cả các yêu cầu chứng nhận
         public async Task<IActionResult> Index()
         {
-            var requests = await _context.CertificateRequests
-                .Include(r => r.Citizen)
-                .Include(r => r.CertificateType)
-                .Include(r => r.Processor)
+            var certificateRequests = await _context.CertificateRequests
+                .Include(cr => cr.Citizen)
+                .Include(cr => cr.CertificateType)
+                .Include(cr => cr.Processor)
+                .OrderByDescending(cr => cr.SubmissionDate)
                 .ToListAsync();
 
-            if (requests == null) // Prevent null
-                requests = new List<CertificateRequestz>();
-
-            return View(requests);
+            return View(certificateRequests);
         }
 
-
-        // GET: api/CertificateRequests/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CertificateRequestz>> GetCertificateRequest(int id)
+        // Hiển thị chi tiết yêu cầu chứng nhận
+        public async Task<IActionResult> Details(int id)
         {
-            var request = await _context.CertificateRequests
-                .Include(r => r.Citizen)
-                .Include(r => r.CertificateType)
-                .Include(r => r.Processor)
-                .Include(r => r.Attachments)
-                .FirstOrDefaultAsync(r => r.RequestId == id);
-
-            if (request == null)
+            if (id == 0)
             {
                 return NotFound();
             }
 
-            return request;
-        }
+            var certificateRequest = await _context.CertificateRequests
+                .Include(cr => cr.Citizen)
+                .Include(cr => cr.CertificateType)
+                .Include(cr => cr.Processor)
+                .Include(cr => cr.Attachments) // Bao gồm các tài liệu đính kèm
+                .FirstOrDefaultAsync(m => m.RequestId == id);
 
-        // GET: api/CertificateRequests/Citizen/5
-        [HttpGet("Citizen/{citizenId}")]
-        public async Task<ActionResult<IEnumerable<CertificateRequestz>>> GetCitizenRequests(string citizenId)
-        {
-            return await _context.CertificateRequests
-                .Where(r => r.CitizenId == citizenId)
-                .Include(r => r.CertificateType)
-                .Include(r => r.Processor)
-                .ToListAsync();
-        }
-
-        // POST: api/CertificateRequests
-        [HttpPost]
-        public async Task<ActionResult<CertificateRequestz>> CreateCertificateRequest(CertificateRequestz request)
-        {
-            request.SubmissionDate = DateTime.Now;
-            request.Status = "Pending"; // Default status for new requests
-
-            _context.CertificateRequests.Add(request);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCertificateRequest", new { id = request.RequestId }, request);
-        }
-
-        // PUT: api/CertificateRequests/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCertificateRequest(int id, CertificateRequestz request)
-        {
-            if (id != request.RequestId)
+            if (certificateRequest == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            _context.Entry(request).State = EntityState.Modified;
-            _context.Entry(request).Property(x => x.SubmissionDate).IsModified = false;
+            return View(certificateRequest);
+        }
 
-            try
+        // Tạo yêu cầu chứng nhận mới
+        public IActionResult Create()
+        {
+            ViewData["CitizenId"] = new SelectList(_context.Citizens, "CitizenId", "FullName");
+            ViewData["CertificateTypeId"] = new SelectList(_context.CertificateTypes, "CertificateTypeId", "CertificateTypeName");
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CertificateRequestz certificateRequest)
+        {
+            if (ModelState.IsValid)
             {
+                certificateRequest.SubmissionDate = DateTime.Now; // Ghi nhận ngày gửi yêu cầu
+                _context.Add(certificateRequest);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["CitizenId"] = new SelectList(_context.Citizens, "CitizenId", "FullName", certificateRequest.CitizenId);
+            ViewData["CertificateTypeId"] = new SelectList(_context.CertificateTypes, "CertificateTypeId", "CertificateTypeName", certificateRequest.CertificateTypeId);
+            return View(certificateRequest);
+        }
+
+        // Hiển thị form chỉnh sửa yêu cầu chứng nhận
+        public async Task<IActionResult> Edit(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var certificateRequest = await _context.CertificateRequests.FindAsync(id);
+            if (certificateRequest == null)
+            {
+                return NotFound();
+            }
+
+            ViewData["CitizenId"] = new SelectList(_context.Citizens, "CitizenId", "FullName", certificateRequest.CitizenId);
+            ViewData["CertificateTypeId"] = new SelectList(_context.CertificateTypes, "CertificateTypeId", "CertificateTypeName", certificateRequest.CertificateTypeId);
+            return View(certificateRequest);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CertificateRequestz certificateRequest)
+        {
+            if (id != certificateRequest.RequestId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(certificateRequest);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!CertificateRequestExists(certificateRequest.RequestId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+
+            ViewData["CitizenId"] = new SelectList(_context.Citizens, "CitizenId", "FullName", certificateRequest.CitizenId);
+            ViewData["CertificateTypeId"] = new SelectList(_context.CertificateTypes, "CertificateTypeId", "CertificateTypeName", certificateRequest.CertificateTypeId);
+            return View(certificateRequest);
+        }
+
+        // Hiển thị form xóa yêu cầu chứng nhận
+        public async Task<IActionResult> Delete(int id)
+        {
+            if (id == 0)
+            {
+                return NotFound();
+            }
+
+            var certificateRequest = await _context.CertificateRequests
+                .Include(cr => cr.Citizen)
+                .Include(cr => cr.CertificateType)
+                .FirstOrDefaultAsync(m => m.RequestId == id);
+
+            if (certificateRequest == null)
+            {
+                return NotFound();
+            }
+
+            return View(certificateRequest);
+        }
+
+        // Xử lý xóa yêu cầu chứng nhận
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var certificateRequest = await _context.CertificateRequests.FindAsync(id);
+            if (certificateRequest != null)
+            {
+                _context.CertificateRequests.Remove(certificateRequest);
                 await _context.SaveChangesAsync();
             }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CertificateRequestExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/CertificateRequests/5/Process
-        [HttpPost("{id}/Process")]
-        public async Task<IActionResult> ProcessRequest(int id, [FromBody] RequestProcessModel model)
-        {
-            var request = await _context.CertificateRequests.FindAsync(id);
-
-            if (request == null)
-            {
-                return NotFound();
-            }
-
-            request.Status = model.NewStatus;
-            request.ProcessedBy = model.ProcessedBy;
-            request.Notes = model.Notes;
-
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // DELETE: api/CertificateRequests/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<CertificateRequestz>> DeleteCertificateRequest(int id)
-        {
-            var request = await _context.CertificateRequests.FindAsync(id);
-            if (request == null)
-            {
-                return NotFound();
-            }
-
-            _context.CertificateRequests.Remove(request);
-            await _context.SaveChangesAsync();
-
-            return request;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool CertificateRequestExists(int id)
