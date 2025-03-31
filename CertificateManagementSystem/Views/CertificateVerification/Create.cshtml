@@ -1,0 +1,57 @@
+﻿@model CitizenshipCertificateandDiplomaManagementSystem.Models.CertificateVerification
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>CertificateVerification</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="CertificateId" class="control-label"></label>
+                <select asp-for="CertificateId" class ="form-control" asp-items="ViewBag.CertificateId"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="VerificationDate" class="control-label"></label>
+                <input asp-for="VerificationDate" class="form-control" />
+                <span asp-validation-for="VerificationDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VerifyingOrganization" class="control-label"></label>
+                <input asp-for="VerifyingOrganization" class="form-control" />
+                <span asp-validation-for="VerifyingOrganization" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VerifiedBy" class="control-label"></label>
+                <input asp-for="VerifiedBy" class="form-control" />
+                <span asp-validation-for="VerifiedBy" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VerificationResult" class="control-label"></label>
+                <input asp-for="VerificationResult" class="form-control" />
+                <span asp-validation-for="VerificationResult" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Notes" class="control-label"></label>
+                <input asp-for="Notes" class="form-control" />
+                <span asp-validation-for="Notes" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

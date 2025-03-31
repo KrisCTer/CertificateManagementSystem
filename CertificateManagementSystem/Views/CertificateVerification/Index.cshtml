@@ -1,0 +1,65 @@
+﻿@model IEnumerable<CitizenshipCertificateandDiplomaManagementSystem.Models.CertificateVerification>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.VerificationDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VerifyingOrganization)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VerifiedBy)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.VerificationResult)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Notes)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Certificate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.VerificationDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VerifyingOrganization)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VerifiedBy)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.VerificationResult)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Notes)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Certificate.CertificateId)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.VerificationId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.VerificationId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.VerificationId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
