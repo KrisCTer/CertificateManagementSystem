@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hệ thống Quản lý Chứng chỉ</title>
+    <title>@ViewData["Title"] - Hệ thống Quản lý Chứng chỉ</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" rel="stylesheet">
     <style>
@@ -285,7 +285,6 @@
     </style>
 </head>
 <body>
-    <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="sidebar-header">
             <img src="/api/placeholder/250/100" alt="Logo" class="img-fluid">
@@ -294,57 +293,57 @@
 
         <ul class="components">
             <li class="active">
-                <a href="#dashboard">
+                <a href="/">
                     <i class="fas fa-tachometer-alt"></i> <span>Trang chủ</span>
                 </a>
             </li>
             <li>
-                <a href="#citizens">
+                <a href="/Citizens">
                     <i class="fas fa-users"></i> <span>Công dân</span>
                 </a>
             </li>
             <li>
-                <a href="#institutions">
+                <a href="/Institutions">
                     <i class="fas fa-university"></i> <span>Tổ chức giáo dục</span>
                 </a>
             </li>
             <li>
-                <a href="#certificates">
+                <a href="/Certificates">
                     <i class="fas fa-certificate"></i> <span>Chứng chỉ</span>
                 </a>
             </li>
             <li>
-                <a href="#certificateTypes">
+                <a href="/CertificateTypes">
                     <i class="fas fa-tag"></i> <span>Loại chứng chỉ</span>
                 </a>
             </li>
             <li>
-                <a href="#requests">
+                <a href="/Requests">
                     <i class="fas fa-file-alt"></i> <span>Yêu cầu</span>
                 </a>
             </li>
             <li>
-                <a href="#verification">
+                <a href="/Verification">
                     <i class="fas fa-check-circle"></i> <span>Xác minh</span>
                 </a>
             </li>
             <li>
-                <a href="#users">
+                <a href="/Users">
                     <i class="fas fa-user-cog"></i> <span>Người dùng</span>
                 </a>
             </li>
             <li>
-                <a href="#reports">
+                <a href="/Reports">
                     <i class="fas fa-chart-bar"></i> <span>Báo cáo</span>
                 </a>
             </li>
             <li>
-                <a href="#logs">
+                <a href="/Logs">
                     <i class="fas fa-history"></i> <span>Nhật ký hệ thống</span>
                 </a>
             </li>
             <li>
-                <a href="#settings">
+                <a href="/Settings">
                     <i class="fas fa-cog"></i> <span>Cài đặt</span>
                 </a>
             </li>
@@ -355,399 +354,10 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
     <div class="main-content">
-            @RenderBody()
-        <!-- Top Navigation -->
-        <nav class="navbar navbar-expand-lg navbar-light mb-4">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
-                                <i class="fas fa-bell"></i>
-                                <span class="badge bg-danger rounded-pill">3</span>
-                            </a>
-                            <ul class="dropdown-menu dropdown-menu-end">
-                                <li><a class="dropdown-item" href="#">Yêu cầu chứng chỉ mới</a></li>
-                                <li><a class="dropdown-item" href="#">Xác minh đang chờ xử lý</a></li>
-                                <li><a class="dropdown-item" href="#">Cảnh báo bảo mật</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                                <img src="/api/placeholder/32/32" alt="User" class="rounded-circle me-2" width="32" height="32">
-                                <span>Admin User</span>
-                            </a>
-                            <partial
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Dashboard Section -->
-            @if (Model != null)
-            {
-                <div class="container-fluid">
-                    <h1 class="h3 mb-4">Bảng điều khiển</h1>
-
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-blue">
-                                <i class="fas fa-users"></i>
-                                <h4>@Model.CitizensCount</h4>
-                                <p>Công dân</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-green">
-                                <i class="fas fa-certificate"></i>
-                                <h4>@Model.CertificatesCount</h4>
-                                <p>Chứng chỉ</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-yellow">
-                                <i class="fas fa-file-alt"></i>
-                                <h4>@Model.PendingRequestsCount</h4>
-                                <p>Yêu cầu đang chờ</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-red">
-                                <i class="fas fa-check-circle"></i>
-                                <h4>@Model.RecentVerificationsCount</h4>
-                                <p>Xác minh gần đây</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="container-fluid">
-                    <h1 class="h3 mb-4">Bảng điều khiển</h1>
-
-                    <div class="row">
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-blue">
-                                <i class="fas fa-users"></i>
-                                <h4>0</h4>
-                                <p>Công dân</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-green">
-                                <i class="fas fa-certificate"></i>
-                                <h4>0</h4>
-                                <p>Chứng chỉ</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-yellow">
-                                <i class="fas fa-file-alt"></i>
-                                <h4>0</h4>
-                                <p>Yêu cầu đang chờ</p>
-                            </div>
-                        </div>
-                        <div class="col-xl-3 col-md-6">
-                            <div class="dashboard-stat stat-red">
-                                <i class="fas fa-check-circle"></i>
-                                <h4>0</h4>
-                                <p>Xác minh gần đây</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            }
-
-            <div class="row mt-4">
-                <div class="col-lg-8">
-                    <div class="card">
-                        <div class="card-header d-flex justify-content-between align-items-center">
-                            <span>Yêu cầu chứng chỉ gần đây</span>
-                            <a href="#" class="btn btn-sm btn-primary">Xem tất cả</a>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Công dân</th>
-                                            <th>Loại chứng chỉ</th>
-                                            <th>Ngày gửi</th>
-                                            <th>Trạng thái</th>
-                                            <th>Thao tác</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>REQ001</td>
-                                            <td>Nguyễn Văn A</td>
-                                            <td>Cử nhân CNTT</td>
-                                            <td>25/03/2025</td>
-                                            <td><span class="badge bg-warning text-dark">Đang xử lý</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm btn-success btn-action"><i class="fas fa-check"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>REQ002</td>
-                                            <td>Trần Thị B</td>
-                                            <td>Thạc sĩ Kinh tế</td>
-                                            <td>24/03/2025</td>
-                                            <td><span class="badge bg-success">Hoàn thành</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>REQ003</td>
-                                            <td>Lê Văn C</td>
-                                            <td>Chứng chỉ IELTS</td>
-                                            <td>23/03/2025</td>
-                                            <td><span class="badge bg-danger">Từ chối</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm btn-warning btn-action"><i class="fas fa-edit"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>REQ004</td>
-                                            <td>Phạm Thị D</td>
-                                            <td>Bằng Tốt nghiệp</td>
-                                            <td>22/03/2025</td>
-                                            <td><span class="badge bg-info">Kiểm tra</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm btn-success btn-action"><i class="fas fa-check"></i></button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>REQ005</td>
-                                            <td>Hoàng Văn E</td>
-                                            <td>Chứng chỉ Nghề</td>
-                                            <td>21/03/2025</td>
-                                            <td><span class="badge bg-warning text-dark">Đang xử lý</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-primary btn-action"><i class="fas fa-eye"></i></button>
-                                                <button class="btn btn-sm btn-success btn-action"><i class="fas fa-check"></i></button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-lg-4">
-                    <div class="card">
-                        <div class="card-header">
-                            Thống kê chứng chỉ theo loại
-                        </div>
-                        <div class="card-body">
-                            <img src="/api/placeholder/350/250" alt="Biểu đồ" class="img-fluid">
-                        </div>
-                    </div>
-
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            Hoạt động gần đây
-                        </div>
-                        <div class="card-body p-0">
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Chứng chỉ mới được cấp</h6>
-                                        <small>3 giờ trước</small>
-                                    </div>
-                                    <p class="mb-1">Chứng chỉ CNTT đã được cấp cho Nguyễn Văn A.</p>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Yêu cầu xác minh mới</h6>
-                                        <small>5 giờ trước</small>
-                                    </div>
-                                    <p class="mb-1">Công ty XYZ yêu cầu xác minh bằng đại học của Trần Thị B.</p>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Cập nhật hồ sơ công dân</h6>
-                                        <small>8 giờ trước</small>
-                                    </div>
-                                    <p class="mb-1">Thông tin liên lạc của Lê Văn C đã được cập nhật.</p>
-                                </li>
-                                <li class="list-group-item">
-                                    <div class="d-flex w-100 justify-content-between">
-                                        <h6 class="mb-1">Đăng nhập quản trị viên</h6>
-                                        <small>1 ngày trước</small>
-                                    </div>
-                                    <p class="mb-1">Quản trị viên đã đăng nhập và thực hiện các thay đổi cấu hình.</p>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Certificate Management Section (Hidden by default) -->
-        <div class="container-fluid d-none" id="certificatesSection">
-            <div class="d-flex justify-content-between align-items-center mb-4">
-                <h1 class="h3">Quản lý Chứng chỉ</h1>
-                <button class="btn btn-primary"><i class="fas fa-plus me-2"></i>Thêm chứng chỉ mới</button>
-            </div>
-
-            <div class="card">
-                <div class="card-header">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="input-group">
-                                <input type="text" class="form-control" placeholder="Tìm kiếm...">
-                                <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
-                            </div>
-                        </div>
-                        <div class="col-md-6 d-flex justify-content-end align-items-center">
-                            <div class="btn-group">
-                                <button class="btn btn-outline-secondary">Lọc</button>
-                                <button class="btn btn-outline-secondary">Xuất</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead>
-                                <tr>
-                                    <th><input type="checkbox" class="form-check-input"></th>
-                                    <th>ID</th>
-                                    <th>Tên công dân</th>
-                                    <th>Loại chứng chỉ</th>
-                                    <th>Tổ chức cấp</th>
-                                    <th>Ngày cấp</th>
-                                    <th>Hạn</th>
-                                    <th>Trạng thái</th>
-                                    <th>Thao tác</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input"></td>
-                                    <td>CERT001</td>
-                                    <td>Nguyễn Văn A</td>
-                                    <td>Cử nhân CNTT</td>
-                                    <td>Đại học ABC</td>
-                                    <td>15/01/2023</td>
-                                    <td>Vĩnh viễn</td>
-                                    <td><span class="badge bg-success">Hợp lệ</span></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input"></td>
-                                    <td>CERT002</td>
-                                    <td>Trần Thị B</td>
-                                    <td>Thạc sĩ Kinh tế</td>
-                                    <td>Đại học XYZ</td>
-                                    <td>20/06/2020</td>
-                                    <td>Vĩnh viễn</td>
-                                    <td><span class="badge bg-success">Hợp lệ</span></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input"></td>
-                                    <td>CERT003</td>
-                                    <td>Lê Văn C</td>
-                                    <td>Chứng chỉ IELTS</td>
-                                    <td>Hội đồng Anh</td>
-                                    <td>10/11/2022</td>
-                                    <td>10/11/2024</td>
-                                    <td><span class="badge bg-warning text-dark">Sắp hết hạn</span></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input"></td>
-                                    <td>CERT004</td>
-                                    <td>Phạm Thị D</td>
-                                    <td>Bằng Tốt nghiệp</td>
-                                    <td>Trường THPT DEF</td>
-                                    <td>05/07/2018</td>
-                                    <td>Vĩnh viễn</td>
-                                    <td><span class="badge bg-success">Hợp lệ</span></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td><input type="checkbox" class="form-check-input"></td>
-                                    <td>CERT005</td>
-                                    <td>Hoàng Văn E</td>
-                                    <td>Chứng chỉ Nghề</td>
-                                    <td>Trung tâm dạy nghề GHI</td>
-                                    <td>12/03/2021</td>
-                                    <td>12/03/2026</td>
-                                    <td><span class="badge bg-success">Hợp lệ</span></td>
-                                    <td>
-                                        <div class="btn-group">
-                                            <button class="btn btn-sm btn-primary"><i class="fas fa-eye"></i></button>
-                                            <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
-                                            <button class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <nav aria-label="Page navigation" class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <li class="page-item disabled">
-                                <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
-                            </li>
-                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                            <li class="page-item"><a class="page-link" href="#">2</a></li>
-                            <li class="page-item"><a class="page-link" href="#">3</a></li>
-                            <li class="page-item">
-                                <a class="page-link" href="#">Tiếp</a>
-                            </li>
-                        </ul>
-                    </nav>
-                </div>
-            </div>
-        </div>
+        @RenderBody()
     </div>
 
-    <!-- Certificate Detail Modal (Hidden by default) -->
     <div class="modal fade" id="certificateDetailModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -827,127 +437,120 @@
         </div>
     </div>
 
-    <!-- Add New Certificate Form (Hidden by default) -->
     <div class="container-fluid d-none" id="addCertificateSection">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h1 class="h3">Thêm Chứng chỉ mới</h1>
-            <button class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-2"></i>Quay lại</button>
-        </div>
-
-        <div class="step-indicator">
-            <div class="step active">
-                <div class="step-number">1</div>
-                <div class="step-title">Thông tin cơ bản</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-title">Thông tin công dân</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-title">Chi tiết chứng chỉ</div>
-                <div class="step-line"></div>
-            </div>
-            <div class="step">
-                <div class="step-number">4</div>
-                <div class="step-title">Xem trước & Xác nhận</div>
-            </div>
-        </div>
-
-        <form>
-            <div class="form-section">
-                <h4>Thông tin cơ bản</h4>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="certificateType" class="form-label">Loại chứng chỉ *</label>
-                            <select class="form-select" id="certificateType" required>
-                                <option value="" selected disabled>-- Chọn loại chứng chỉ --</option>
-                                <option value="1">Bằng Cử nhân</option>
-                                <option value="2">Bằng Thạc sĩ</option>
-                                <option value="3">Bằng Tiến sĩ</option>
-                                <option value="4">Chứng chỉ ngoại ngữ</option>
-                                <option value="5">Chứng chỉ nghề</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="issuingInstitution" class="form-label">Tổ chức cấp *</label>
-                            <select class="form-select" id="issuingInstitution" required>
-                                <option value="" selected disabled>-- Chọn tổ chức cấp --</option>
-                                <option value="1">Đại học Quốc gia Hà Nội</option>
-                                <option value="2">Đại học Bách Khoa Hà Nội</option>
-                                <option value="3">Đại học Kinh tế Quốc dân</option>
-                                <option value="4">Hội đồng Anh</option>
-                                <option value="5">Trung tâm Dạy nghề ABC</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="issueDate" class="form-label">Ngày cấp *</label>
-                            <input type="date" class="form-control" id="issueDate" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label for="expiryDate" class="form-label">Ngày hết hạn</label>
-                            <input type="date" class="form-control" id="expiryDate">
-                            <div class="form-text">Để trống nếu chứng chỉ có giá trị vĩnh viễn</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="d-flex justify-content-between mt-4">
-                <button type="button" class="btn btn-outline-secondary" disabled>Quay lại</button>
-                <button type="button" class="btn btn-primary">Tiếp theo</button>
-            </div>
-        </form>
     </div>
 
-    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", () => {
-                const mainContent = document.querySelector(".main-content");
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Fix 1: Check if we're in an iframe to avoid navigation issues
+            if (window.self === window.top) {
                 const menuItems = document.querySelectorAll(".sidebar ul li a");
 
-                // Danh sách nội dung tương ứng
-                const pages = {
-                    dashboard: "<h2>Trang chủ</h2><p>Chào mừng bạn đến với trang chủ!</p>",
-                    citizens: "<h2>Công dân</h2><p>Danh sách công dân...</p>",
-                    institutions: "<h2>Tổ chức giáo dục</h2><p>Thông tin về các tổ chức...</p>",
-                    certificates: "<h2>Chứng chỉ</h2><p>Danh sách chứng chỉ...</p>",
-                    certificateTypes: "<h2>Loại chứng chỉ</h2><p>Các loại chứng chỉ...</p>",
-                    requests: "<h2>Yêu cầu</h2><p>Danh sách các yêu cầu...</p>",
-                    verification: "<h2>Xác minh</h2><p>Xác minh chứng chỉ...</p>",
-                    users: "<h2>Người dùng</h2><p>Danh sách người dùng...</p>",
-                    reports: "<h2>Báo cáo</h2><p>Báo cáo hệ thống...</p>",
-                    logs: "<h2>Nhật ký hệ thống</h2><p>Lịch sử hoạt động...</p>",
-                    settings: "<h2>Cài đặt</h2><p>Tùy chỉnh hệ thống...</p>"
-                };
-
                 menuItems.forEach(item => {
-                    item.addEventListener("click", event => {
-                        event.preventDefault(); // Ngăn tải lại trang
-                        const page = item.getAttribute("href").substring(1); // Lấy ID trang
+                    item.addEventListener("click", function(event) {
+                        event.preventDefault();
 
-                        if (pages[page]) {
-                            mainContent.innerHTML = pages[page]; // Thay đổi nội dung
-                            document.querySelector(".sidebar ul li.active")?.classList.remove("active");
-                            item.parentElement.classList.add("active"); // Đánh dấu menu được chọn
-                        }
+                        document.querySelector(".sidebar ul li.active")?.classList.remove("active");
+                        this.parentElement.classList.add("active");
+
+                        const href = this.getAttribute("href");
+
+                        // Fix 2: Show loading indicator
+                        document.querySelector(".main-content").innerHTML = '<div class="d-flex justify-content-center mt-5"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+
+                        // Fix 3: Add proper error handling with retry mechanism
+                        const fetchContent = (url, retries = 3) => {
+                            return fetch(url)
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error(`Server responded with ${response.status}`);
+                                    }
+                                    return response.text();
+                                })
+                                .then(data => {
+                                    // Update the URL without reloading the page
+                                    history.pushState(null, "", url);
+                                    document.querySelector(".main-content").innerHTML = data;
+                                })
+                                .catch(error => {
+                                    console.error('Error fetching page content:', error);
+                                    if (retries > 0) {
+                                        // Fix 4: Wait before retrying
+                                        setTimeout(() => {
+                                            fetchContent(url, retries - 1);
+                                        }, 1000);
+                                    } else {
+                                        document.querySelector(".main-content").innerHTML =
+                                            `<div class="alert alert-danger">
+                                                <h4>Error loading content</h4>
+                                                <p>${error.message}</p>
+                                                <button class="btn btn-outline-danger mt-2" onclick="window.location.reload()">Refresh Page</button>
+                                            </div>`;
+                                    }
+                                });
+                        };
+
+                        fetchContent(href);
                     });
                 });
-            });
-        </script>
 
+                // Fix 5: Handle back/forward browser navigation
+                window.addEventListener('popstate', function() {
+                    const currentPath = window.location.pathname;
+                    fetch(currentPath)
+                        .then(response => response.text())
+                        .then(data => {
+                            document.querySelector(".main-content").innerHTML = data;
+
+                            // Update active menu item
+                            document.querySelector(".sidebar ul li.active")?.classList.remove("active");
+                            document.querySelector(`.sidebar ul li a[href="${currentPath}"]`)?.parentElement.classList.add("active");
+                        })
+                        .catch(error => {
+                            console.error('Error handling navigation:', error);
+                        });
+                });
+            }
+
+            // Fix 6: Add error handling for the action buttons in the citizens view
+            document.addEventListener("click", function(event) {
+                const actionButton = event.target.closest(".btn-group a");
+                if (actionButton) {
+                    event.preventDefault();
+                    const href = actionButton.getAttribute("href");
+
+                    fetch(href)
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.text();
+                        })
+                        .then(data => {
+                            document.querySelector(".main-content").innerHTML = data;
+                        })
+                        .catch(error => {
+                            console.error('Error fetching action content:', error);
+
+                            // Show user-friendly error with retry option
+                            const errorAlert = document.createElement('div');
+                            errorAlert.className = 'alert alert-danger mt-3';
+                            errorAlert.innerHTML = `
+                                <p>Failed to load content: ${error.message}</p>
+                                <button class="btn btn-sm btn-outline-danger" onclick="window.location.href='${href}'">Try Again</button>
+                            `;
+
+                            // Insert alert after the table
+                            const table = document.querySelector(".table-responsive");
+                            if (table) {
+                                table.parentNode.insertBefore(errorAlert, table.nextSibling);
+                            }
+                        });
+                }
+            });
+        });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

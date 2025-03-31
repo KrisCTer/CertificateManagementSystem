@@ -1,133 +1,135 @@
-﻿using CitizenshipCertificateandDiplomaManagementSystem.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using CertificateManagementSystem.Models;
+using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class EducationalInstitutionsController : Controller
+    public class EducationalInstitutionController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
         private readonly ApplicationDbContext _context;
 
-        public EducationalInstitutionsController(ApplicationDbContext context)
+        public EducationalInstitutionController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/EducationalInstitutions
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<EducationalInstitution>>> GetInstitutions()
+        public async Task<IActionResult> Index()
         {
-            return await _context.EducationalInstitutions.ToListAsync();
+            var institutions = await _context.EducationalInstitutions.ToListAsync();
+            return View(institutions);
         }
 
-        // GET: api/EducationalInstitutions/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<EducationalInstitution>> GetInstitution(string id)
+        public async Task<IActionResult> Details(string id)
         {
-            var institution = await _context.EducationalInstitutions.FindAsync(id);
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var institution = await _context.EducationalInstitutions.FindAsync(id);
             if (institution == null)
             {
                 return NotFound();
             }
 
-            return institution;
+            return View(institution);
         }
 
-        // GET: api/EducationalInstitutions/5/Certificates
-        [HttpGet("{id}/Certificates")]
-        public async Task<ActionResult<IEnumerable<Certificate>>> GetInstitutionCertificates(string id)
+        public IActionResult Create()
         {
-            if (!InstitutionExists(id))
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(EducationalInstitution institution)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.EducationalInstitutions.Add(institution);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(institution);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
             {
                 return NotFound();
             }
 
-            return await _context.Certificates
-                .Where(c => c.IssuingInstitutionId == id)
-                .Include(c => c.Citizen)
-                .Include(c => c.CertificateType)
-                .ToListAsync();
+            var institution = await _context.EducationalInstitutions.FindAsync(id);
+            if (institution == null)
+            {
+                return NotFound();
+            }
+            return View(institution);
         }
 
-        // POST: api/EducationalInstitutions
         [HttpPost]
-        public async Task<ActionResult<EducationalInstitution>> CreateInstitution(EducationalInstitution institution)
-        {
-            institution.CreatedDate = DateTime.Now;
-            _context.EducationalInstitutions.Add(institution);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (InstitutionExists(institution.InstitutionId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetInstitution", new { id = institution.InstitutionId }, institution);
-        }
-
-        // PUT: api/EducationalInstitutions/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateInstitution(string id, EducationalInstitution institution)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, EducationalInstitution institution)
         {
             if (id != institution.InstitutionId)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            institution.UpdatedDate = DateTime.Now;
-            _context.Entry(institution).State = EntityState.Modified;
-            _context.Entry(institution).Property(x => x.CreatedDate).IsModified = false;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!InstitutionExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(institution);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!InstitutionExists(institution.InstitutionId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(institution);
         }
 
-        // DELETE: api/EducationalInstitutions/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<EducationalInstitution>> DeleteInstitution(string id)
+        public async Task<IActionResult> Delete(string id)
         {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
             var institution = await _context.EducationalInstitutions.FindAsync(id);
             if (institution == null)
             {
                 return NotFound();
             }
 
-            _context.EducationalInstitutions.Remove(institution);
-            await _context.SaveChangesAsync();
+            return View(institution);
+        }
 
-            return institution;
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var institution = await _context.EducationalInstitutions.FindAsync(id);
+            if (institution != null)
+            {
+                _context.EducationalInstitutions.Remove(institution);
+                await _context.SaveChangesAsync();
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         private bool InstitutionExists(string id)

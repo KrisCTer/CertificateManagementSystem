@@ -1,0 +1,485 @@
+﻿@model IEnumerable<CitizenshipCertificateandDiplomaManagementSystem.Models.Citizen>
+@{
+    ViewData["Title"] = "Danh sách công dân";
+    // Fix 1: Use the shared layout instead of null
+    Layout = "_Layout"; 
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Danh sách công dân</h2>
+        <a href="/Citizens/Create" class="btn btn-primary create-btn">
+            <i class="fas fa-plus-circle me-2"></i>Thêm mới
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" id="searchInput" class="form-control" placeholder="Tìm kiếm theo tên, CCCD, địa chỉ...">
+                        <button class="btn btn-outline-secondary" id="searchButton" type="button">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-outline-secondary me-2" id="filterButton">
+                            <i class="fas fa-filter"></i> Lọc
+                        </button>
+                        <button class="btn btn-outline-secondary" id="exportButton">
+                            <i class="fas fa-download"></i> Xuất
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <!-- Fix 2: Add loading indicator container -->
+            <div id="loadingIndicator" class="text-center py-3 d-none">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-2">Đang tải dữ liệu...</p>
+            </div>
+            
+            <!-- Fix 3: Add error message container -->
+            <div id="errorContainer" class="alert alert-danger d-none">
+                <p id="errorMessage">Error loading content. Please try again later.</p>
+                <button id="retryButton" class="btn btn-sm btn-outline-danger">Thử lại</button>
+            </div>
+            
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>
+                                @Html.DisplayNameFor(model => model.FullName)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.DateOfBirth)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Gender)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.IdNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PlaceOfBirth)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.Email)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.PhoneNumber)
+                            </th>
+                            <th>
+                                @Html.DisplayNameFor(model => model.CreatedDate)
+                            </th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model) {
+                            <tr>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.FullName)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.DateOfBirth)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Gender)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.IdNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PlaceOfBirth)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.Email)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.PhoneNumber)
+                                </td>
+                                <td>
+                                    @Html.DisplayFor(modelItem => item.CreatedDate)
+                                </td>
+                                <td>
+                                    <div class="btn-group">
+                                        <a href="/Citizens/Edit/@item.CitizenId" class="btn btn-sm btn-outline-primary action-btn" data-action="edit" title="Chỉnh sửa">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="/Citizens/Details/@item.CitizenId" class="btn btn-sm btn-outline-info action-btn" data-action="details" title="Chi tiết">
+                                            <i class="fas fa-info-circle"></i>
+                                        </a>
+                                        <a href="/Citizens/Delete/@item.CitizenId" class="btn btn-sm btn-outline-danger action-btn" data-action="delete" title="Xóa">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mb-0">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Trước</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Sau</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Fix 4: Improved action buttons handling with better error handling
+        const actionButtons = document.querySelectorAll(".action-btn");
+        const loadingIndicator = document.getElementById("loadingIndicator");
+        const errorContainer = document.getElementById("errorContainer");
+        const errorMessage = document.getElementById("errorMessage");
+        const retryButton = document.getElementById("retryButton");
+        const tableContainer = document.querySelector(".table-responsive");
+        
+        let lastRequestUrl = null;
+        
+        // Function to show/hide loading and error states
+        function showLoading(show) {
+            if (show) {
+                loadingIndicator.classList.remove("d-none");
+            } else {
+                loadingIndicator.classList.add("d-none");
+            }
+        }
+        
+        function showError(show, message = "") {
+            if (show) {
+                errorContainer.classList.remove("d-none");
+                if (message) errorMessage.textContent = message;
+            } else {
+                errorContainer.classList.add("d-none");
+            }
+        }
+        
+        // Function to fetch content with retry logic
+        function fetchContent(url, maxRetries = 2) {
+            lastRequestUrl = url;
+            showLoading(true);
+            showError(false);
+            
+            return fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    showLoading(false);
+                    return data;
+                })
+                .catch(error => {
+                    console.error('Error fetching content:', error);
+                    if (maxRetries > 0) {
+                        // Wait before retrying
+                        setTimeout(() => {
+                            fetchContent(url, maxRetries - 1);
+                        }, 1000);
+                    } else {
+                        showLoading(false);
+                        showError(true, `Không thể tải nội dung: ${error.message}`);
+                    }
+                    throw error;
+                });
+        }
+        
+        // Set up retry button
+        retryButton.addEventListener("click", function() {
+            if (lastRequestUrl) {
+                fetchContent(lastRequestUrl)
+                    .then(data => {
+                        document.querySelector(".main-content").innerHTML = data;
+                    })
+                    .catch(error => {
+                        // Error is already handled in fetchContent
+                    });
+            }
+        });
+        
+        // Set up action buttons
+        actionButtons.forEach(button => {
+            button.addEventListener("click", function(event) {
+                event.preventDefault();
+                const href = this.getAttribute("href");
+                const action = this.getAttribute("data-action");
+                
+                // For delete action, ask for confirmation
+                if (action === "delete") {
+                    if (!confirm("Bạn có chắc chắn muốn xóa?")) {
+                        return;
+                    }
+                }
+                
+                fetchContent(href)
+                    .then(data => {
+                        document.querySelector(".main-content").innerHTML = data;
+                    })
+                    .catch(error => {
+                        // Error is already handled in fetchContent
+                    });
+            });
+        });
+        
+        // Fix 5: Implement search functionality
+        const searchInput = document.getElementById("searchInput");
+        const searchButton = document.getElementById("searchButton");
+        
+        function performSearch() {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm.length > 0) {
+                showLoading(true);
+                fetch(`/Citizens/Search?term=${encodeURIComponent(searchTerm)}`)
+                    .then(response => {
+                        if (!response.ok) throw new Error('Search failed');
+                        return response.text();
+                    })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Search failed');
+                            return response.text();
+                        })
+                        .then(data => {
+                            tableContainer.innerHTML = data;
+                            showLoading(false);
+                        })
+                        .catch(error => {
+                            console.error('Search error:', error);
+                            showLoading(false);
+                            showError(true, `Tìm kiếm thất bại: ${error.message}`);
+                        });
+                } else {
+                    // If search term is empty, reload the original list
+                    window.location.href = '/Citizens';
+                }
+            }
+
+            // Setup search button click event
+            searchButton.addEventListener("click", performSearch);
+
+            // Allow search on Enter key
+            searchInput.addEventListener("keyup", function(event) {
+                if (event.key === "Enter") {
+                    performSearch();
+                }
+            });
+
+            // Fix 6: Implement filter functionality
+            const filterButton = document.getElementById("filterButton");
+            filterButton.addEventListener("click", function() {
+                // Show filter modal or dropdown
+                $('#filterModal').modal('show');
+            });
+
+            // Fix 7: Implement export functionality
+            const exportButton = document.getElementById("exportButton");
+            exportButton.addEventListener("click", function() {
+                showLoading(true);
+                fetch('/Citizens/Export')
+                    .then(response => {
+                        if (!response.ok) throw new Error('Export failed');
+                        return response.blob();
+                    })
+                    .then(blob => {
+                        showLoading(false);
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = 'danh-sach-cong-dan.xlsx';
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        a.remove();
+                    })
+                    .catch(error => {
+                        console.error('Export error:', error);
+                        showLoading(false);
+                        showError(true, `Xuất dữ liệu thất bại: ${error.message}`);
+                    });
+            });
+
+            // Fix 8: Implement pagination
+            const paginationLinks = document.querySelectorAll('.pagination .page-link');
+            paginationLinks.forEach(link => {
+                if (!link.parentElement.classList.contains('disabled') &&
+                    !link.parentElement.classList.contains('active')) {
+                    link.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        const page = this.textContent;
+                        let pageUrl = '/Citizens?page=';
+
+                        if (page === 'Trước') {
+                            const activePage = document.querySelector('.page-item.active');
+                            const prevPage = parseInt(activePage.textContent) - 1;
+                            if (prevPage >= 1) {
+                                pageUrl += prevPage;
+                            } else {
+                                return; // Don't navigate if we're on first page
+                            }
+                        } else if (page === 'Sau') {
+                            const activePage = document.querySelector('.page-item.active');
+                            const nextPage = parseInt(activePage.textContent) + 1;
+                            pageUrl += nextPage;
+                        } else {
+                            pageUrl += page;
+                        }
+
+                        showLoading(true);
+                        fetch(pageUrl)
+                            .then(response => {
+                                if (!response.ok) throw new Error('Failed to load page');
+                                return response.text();
+                            })
+                            .then(data => {
+                                document.querySelector('.main-content').innerHTML = data;
+                                showLoading(false);
+                            })
+                            .catch(error => {
+                                console.error('Pagination error:', error);
+                                showLoading(false);
+                                showError(true, `Không thể tải trang: ${error.message}`);
+                            });
+                    });
+                }
+            });
+        });
+    </script>
+
+    <!-- Filter Modal -->
+    <div class="modal fade" id="filterModal" tabindex="-1" aria-labelledby="filterModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="filterModalLabel">Lọc danh sách công dân</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="filterForm">
+                        <div class="mb-3">
+                            <label for="filterGender" class="form-label">Giới tính</label>
+                            <select class="form-select" id="filterGender">
+                                <option value="">Tất cả</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Khác">Khác</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="filterBirthDateFrom" class="form-label">Ngày sinh từ</label>
+                            <input type="date" class="form-control" id="filterBirthDateFrom">
+                        </div>
+                        <div class="mb-3">
+                            <label for="filterBirthDateTo" class="form-label">Đến ngày</label>
+                            <input type="date" class="form-control" id="filterBirthDateTo">
+                        </div>
+                        <div class="mb-3">
+                            <label for="filterPlaceOfBirth" class="form-label">Nơi sinh</label>
+                            <input type="text" class="form-control" id="filterPlaceOfBirth">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="applyFilterButton">Áp dụng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Fix 9: Add toast notifications for user feedback -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+        <div id="notificationToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <strong class="me-auto" id="toastTitle">Thông báo</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body" id="toastMessage">
+                Thao tác thành công!
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Apply filter when the apply button is clicked
+        document.getElementById('applyFilterButton')?.addEventListener('click', function() {
+            const gender = document.getElementById('filterGender').value;
+            const birthDateFrom = document.getElementById('filterBirthDateFrom').value;
+            const birthDateTo = document.getElementById('filterBirthDateTo').value;
+            const placeOfBirth = document.getElementById('filterPlaceOfBirth').value;
+
+            let filterUrl = '/Citizens/Filter?';
+            if (gender) filterUrl += `gender=${encodeURIComponent(gender)}&`;
+            if (birthDateFrom) filterUrl += `fromDate=${encodeURIComponent(birthDateFrom)}&`;
+            if (birthDateTo) filterUrl += `toDate=${encodeURIComponent(birthDateTo)}&`;
+            if (placeOfBirth) filterUrl += `placeOfBirth=${encodeURIComponent(placeOfBirth)}`;
+
+            // Remove trailing & if exists
+            if (filterUrl.endsWith('&')) {
+                filterUrl = filterUrl.slice(0, -1);
+            }
+
+            showLoading(true);
+            fetch(filterUrl)
+                .then(response => {
+                    if (!response.ok) throw new Error('Filter failed');
+                    return response.text();
+                })
+                .then(data => {
+                    tableContainer.innerHTML = data;
+                    $('#filterModal').modal('hide');
+                    showLoading(false);
+                    showToast('Lọc dữ liệu', 'Đã áp dụng bộ lọc thành công');
+                })
+                .catch(error => {
+                    console.error('Filter error:', error);
+                    showLoading(false);
+                    showError(true, `Lọc dữ liệu thất bại: ${error.message}`);
+                });
+        });
+
+        // Function to show toast notifications
+        function showToast(title, message) {
+            const toastElement = document.getElementById('notificationToast');
+            const toast = new bootstrap.Toast(toastElement);
+
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMessage').textContent = message;
+
+            toast.show();
+        }
+
+        // Check for URL parameters to show success/error messages
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('success')) {
+                showToast('Thành công', urlParams.get('message') || 'Thao tác thành công!');
+            } else if (urlParams.has('error')) {
+                showToast('Lỗi', urlParams.get('message') || 'Đã xảy ra lỗi!');
+            }
+        });
+    </script>
+}

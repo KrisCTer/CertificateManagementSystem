@@ -1,111 +1,102 @@
-﻿using CitizenshipCertificateandDiplomaManagementSystem.Models;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CertificateManagementController : Controller
+    public class CitizensController : Controller
     {
-        public IActionResult Index()
+        private readonly ApplicationDbContext _context;
+
+        public CitizensController(ApplicationDbContext context)
+        {
+            _context = context;
+        }
+
+        // GET: Citizens
+        public async Task<IActionResult> Index()
+        {
+            return View(await _context.Citizens.ToListAsync());
+        }
+
+        // GET: Citizens/Details/5
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var citizen = await _context.Citizens
+                .FirstOrDefaultAsync(m => m.CitizenId == id);
+            if (citizen == null)
+            {
+                return NotFound();
+            }
+
+            return View(citizen);
+        }
+
+        // GET: Citizens/Create
+        public IActionResult Create()
         {
             return View();
         }
-        [Route("api/[controller]")]
-        [ApiController]
-        public class CitizensController : ControllerBase
+
+        // POST: Citizens/Create
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create([Bind("CitizenId,FullName,DateOfBirth,Gender,IdNumber,PlaceOfBirth,CurrentAddress,Email,PhoneNumber,ProfilePicture,CreatedDate,UpdatedDate")] Citizen citizen)
         {
-            private readonly ApplicationDbContext _context;
-
-            public CitizensController(ApplicationDbContext context)
+            if (ModelState.IsValid)
             {
-                _context = context;
+                _context.Add(citizen);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(citizen);
+        }
+
+        // GET: Citizens/Edit/5
+        public async Task<IActionResult> Edit(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
             }
 
-            // GET: api/Citizens
-            [HttpGet]
-            public async Task<ActionResult<IEnumerable<Citizen>>> GetCitizens()
+            var citizen = await _context.Citizens.FindAsync(id);
+            if (citizen == null)
             {
-                return await _context.Citizens.ToListAsync();
+                return NotFound();
+            }
+            return View(citizen);
+        }
+
+        // POST: Citizens/Edit/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, [Bind("CitizenId,FullName,DateOfBirth,Gender,IdNumber,PlaceOfBirth,CurrentAddress,Email,PhoneNumber,ProfilePicture,CreatedDate,UpdatedDate")] Citizen citizen)
+        {
+            if (id != citizen.CitizenId)
+            {
+                return NotFound();
             }
 
-            // GET: api/Citizens/5
-            [HttpGet("{id}")]
-            public async Task<ActionResult<Citizen>> GetCitizen(string id)
+            if (ModelState.IsValid)
             {
-                var citizen = await _context.Citizens.FindAsync(id);
-
-                if (citizen == null)
-                {
-                    return NotFound();
-                }
-
-                return citizen;
-            }
-
-            // GET: api/Citizens/5/Certificates
-            [HttpGet("{id}/Certificates")]
-            public async Task<ActionResult<IEnumerable<Certificate>>> GetCitizenCertificates(string id)
-            {
-                if (!CitizenExists(id))
-                {
-                    return NotFound();
-                }
-
-                return await _context.Certificates
-                    .Where(c => c.CitizenId == id)
-                    .Include(c => c.CertificateType)
-                    .Include(c => c.IssuingInstitution)
-                    .ToListAsync();
-            }
-
-            // POST: api/Citizens
-            [HttpPost]
-            public async Task<ActionResult<Citizen>> CreateCitizen(Citizen citizen)
-            {
-                citizen.CreatedDate = DateTime.Now;
-                _context.Citizens.Add(citizen);
-
                 try
                 {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException)
-                {
-                    if (CitizenExists(citizen.CitizenId))
-                    {
-                        return Conflict();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-
-                return CreatedAtAction("GetCitizen", new { id = citizen.CitizenId }, citizen);
-            }
-
-            // PUT: api/Citizens/5
-            [HttpPut("{id}")]
-            public async Task<IActionResult> UpdateCitizen(string id, Citizen citizen)
-            {
-                if (id != citizen.CitizenId)
-                {
-                    return BadRequest();
-                }
-
-                citizen.UpdatedDate = DateTime.Now;
-                _context.Entry(citizen).State = EntityState.Modified;
-                _context.Entry(citizen).Property(x => x.CreatedDate).IsModified = false;
-
-                try
-                {
+                    _context.Update(citizen);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!CitizenExists(id))
+                    if (!CitizenExists(citizen.CitizenId))
                     {
                         return NotFound();
                     }
@@ -114,30 +105,43 @@ namespace CertificateManagementSystem.Controllers
                         throw;
                     }
                 }
-
-                return NoContent();
+                return RedirectToAction(nameof(Index));
             }
+            return View(citizen);
+        }
 
-            // DELETE: api/Citizens/5
-            [HttpDelete("{id}")]
-            public async Task<ActionResult<Citizen>> DeleteCitizen(string id)
+        // GET: Citizens/Delete/5
+        public async Task<IActionResult> Delete(string id)
+        {
+            if (id == null)
             {
-                var citizen = await _context.Citizens.FindAsync(id);
-                if (citizen == null)
-                {
-                    return NotFound();
-                }
-
-                _context.Citizens.Remove(citizen);
-                await _context.SaveChangesAsync();
-
-                return citizen;
+                return NotFound();
             }
 
-            private bool CitizenExists(string id)
+            var citizen = await _context.Citizens
+                .FirstOrDefaultAsync(m => m.CitizenId == id);
+            if (citizen == null)
             {
-                return _context.Citizens.Any(e => e.CitizenId == id);
+                return NotFound();
             }
+
+            return View(citizen);
+        }
+
+        // POST: Citizens/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var citizen = await _context.Citizens.FindAsync(id);
+            _context.Citizens.Remove(citizen);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+        }
+
+        private bool CitizenExists(string id)
+        {
+            return _context.Citizens.Any(e => e.CitizenId == id);
         }
     }
 }

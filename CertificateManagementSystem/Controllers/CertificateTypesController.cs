@@ -1,117 +1,115 @@
-﻿using CitizenshipCertificateandDiplomaManagementSystem.Models;
+﻿using System.Linq;
+using System.Threading.Tasks;
+using CertificateManagementSystem.Models;
+using CitizenshipCertificateandDiplomaManagementSystem.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace CertificateManagementSystem.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CertificateTypesController : Controller
+    public class CertificateTypeController : Controller
     {
-        public IActionResult Index()
-        {
-            return View();
-        }
         private readonly ApplicationDbContext _context;
 
-        public CertificateTypesController(ApplicationDbContext context)
+        public CertificateTypeController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/CertificateTypes
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CertificateType>>> GetCertificateTypes()
+        public async Task<IActionResult> Index()
         {
-            return await _context.CertificateTypes.ToListAsync();
+            var certificateTypes = await _context.CertificateTypes.ToListAsync();
+            return View(certificateTypes);
         }
 
-        // GET: api/CertificateTypes/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<CertificateType>> GetCertificateType(string id)
+        public async Task<IActionResult> Details(string id)
         {
             var certificateType = await _context.CertificateTypes.FindAsync(id);
-
             if (certificateType == null)
             {
                 return NotFound();
             }
-
-            return certificateType;
+            return View(certificateType);
         }
 
-        // POST: api/CertificateTypes
-        [HttpPost]
-        public async Task<ActionResult<CertificateType>> CreateCertificateType(CertificateType certificateType)
+        public IActionResult Create()
         {
-            certificateType.CreatedDate = DateTime.Now;
-            _context.CertificateTypes.Add(certificateType);
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateException)
-            {
-                if (CertificateTypeExists(certificateType.CertificateTypeId))
-                {
-                    return Conflict();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return CreatedAtAction("GetCertificateType", new { id = certificateType.CertificateTypeId }, certificateType);
+            return View();
         }
 
-        // PUT: api/CertificateTypes/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCertificateType(string id, CertificateType certificateType)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CertificateType certificateType)
+        {
+            if (ModelState.IsValid)
+            {
+                _context.CertificateTypes.Add(certificateType);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            }
+            return View(certificateType);
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            var certificateType = await _context.CertificateTypes.FindAsync(id);
+            if (certificateType == null)
+            {
+                return NotFound();
+            }
+            return View(certificateType);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(string id, CertificateType certificateType)
         {
             if (id != certificateType.CertificateTypeId)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            certificateType.UpdatedDate = DateTime.Now;
-            _context.Entry(certificateType).State = EntityState.Modified;
-            _context.Entry(certificateType).Property(x => x.CreatedDate).IsModified = false;
-
-            try
+            if (ModelState.IsValid)
             {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CertificateTypeExists(id))
+                try
                 {
-                    return NotFound();
+                    _context.Update(certificateType);
+                    await _context.SaveChangesAsync();
                 }
-                else
+                catch (DbUpdateConcurrencyException)
                 {
-                    throw;
+                    if (!CertificateTypeExists(certificateType.CertificateTypeId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
                 }
+                return RedirectToAction(nameof(Index));
             }
-
-            return NoContent();
+            return View(certificateType);
         }
 
-        // DELETE: api/CertificateTypes/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<CertificateType>> DeleteCertificateType(string id)
+        public async Task<IActionResult> Delete(string id)
         {
             var certificateType = await _context.CertificateTypes.FindAsync(id);
             if (certificateType == null)
             {
                 return NotFound();
             }
+            return View(certificateType);
+        }
 
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(string id)
+        {
+            var certificateType = await _context.CertificateTypes.FindAsync(id);
             _context.CertificateTypes.Remove(certificateType);
             await _context.SaveChangesAsync();
-
-            return certificateType;
+            return RedirectToAction(nameof(Index));
         }
 
         private bool CertificateTypeExists(string id)
